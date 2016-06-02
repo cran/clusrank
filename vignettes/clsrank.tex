@@ -2,7 +2,56 @@
 %% Only edit .Rnw file
 %\VignetteIndexEntry{Clustered Rank-based Tests}
 %\VignetteEngine{knitr::knitr}
-\documentclass[nojss]{jss}
+\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -66,12 +115,12 @@ Yujing Jiang\\ University of Connecticut \And
   Jun Yan\\ University of Connecticut
   }
 \title{Rank-Based Tests for Clustered Data with \proglang{R} Package
-\pkg{clusrank}}
+\pkg{clsrank}}
 
 %% for pretty printing and a nice hypersummary also set:
 \Plainauthor{Yujing Jiang, Mei-Ling Ting Lee, Jun Yan} %% comma-separated
 \Plaintitle{R package Clustered Wilcoxon Rank Sum Test and Signed Rank Test} %% without formatting
-\Shorttitle{\pkg{clusrank}: rank test for cluster data} %% a short title (if necessary)
+\Shorttitle{\pkg{clsrank}: rank test for cluster data} %% a short title (if necessary)
 
 %% an abstract and keywords
 
@@ -98,7 +147,7 @@ i.e., cluster size is idential or variable. In addition,
 the modified rank sum test can also deal with stratified data.
 No R package is available so far for nonparametric tests for
 clustered data.
-The package \pkg{clusrank} is a realization of the test
+The package \pkg{clsrank} is a realization of the test
 procedures from the two papers mentioned above with both
 small and large sample tests.
 }
@@ -146,6 +195,7 @@ Jun Yan\\
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \section{Introduction}
 
@@ -404,14 +454,44 @@ the membership of an observation in a specific cluster
 and \code{stratum} indicates the stratum an observation
 belongs to.
 
-<<rank sum test for unbalanced data>>=
-library(clusrank)
-data(crd)
-## Using large-sample test.
-cluswilcox.test(z ~ group(group) + cluster(id), data = crd)
-## For small sample, using the permutation test.
-cluswilcox.test(z ~ group(group) + cluster(id), data = crd, permutation = TRUE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(clusrank)}
+\hlkwd{data}\hlstd{(crd)}
+\hlcom{## Using large-sample test.}
+\hlkwd{cluswilcox.test}\hlstd{(z} \hlopt{~} \hlkwd{group}\hlstd{(group)} \hlopt{+} \hlkwd{cluster}\hlstd{(id),} \hlkwc{data} \hlstd{= crd)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon rank sum test for clutered data
+## 
+## data:  z from crd, cluster: id, group: group,
+## Rank sum statistic = 19505
+## Expected value of rank sum statistic = 20013
+## Variance of rank sum statistic = 631030
+## Test statistic = -0.63924, p-value = 0.5227
+## difference in locations = 0
+## The data is unbalanced
+## alternative hypothesis: true difference in locations is not equal to 0
+\end{verbatim}
+\begin{alltt}
+\hlcom{## For small sample, using the permutation test.}
+\hlkwd{cluswilcox.test}\hlstd{(z} \hlopt{~} \hlkwd{group}\hlstd{(group)} \hlopt{+} \hlkwd{cluster}\hlstd{(id),} \hlkwc{data} \hlstd{= crd,} \hlkwc{permutation} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon rank sum test for clutered data
+## 
+## data:  z from crd, cluster: id, group: group,
+## Rank sum statistic = 19505
+## p-value = 0.536
+## location = 0
+## The data is unbalanced
+## alternative hypothesis: true location is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsubsection{Data with Stratification}
@@ -456,10 +536,27 @@ Again, permutation test can be applied when sample size is small.
 Following is an illustration of the rank sum test for the
 stratified data, the \code{crdStr} data is a test data set
 comes with the package:
-<<rank sum test for stratified data>>=
-data(crdStr)
-cluswilcox.test(z ~ group(group) + cluster(id) + stratum(stratum), data = crdStr)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(crdStr)}
+\hlkwd{cluswilcox.test}\hlstd{(z} \hlopt{~} \hlkwd{group}\hlstd{(group)} \hlopt{+} \hlkwd{cluster}\hlstd{(id)} \hlopt{+} \hlkwd{stratum}\hlstd{(stratum),} \hlkwc{data} \hlstd{= crdStr)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon rank sum test for clutered data
+## 
+## data:  z from crdStr, stratum: stratum, cluster: id, group: group,
+## Rank sum statistic = 222250
+## Expected value of rank sum statistic = 227660
+## Variance of rank sum statistic = 20338000
+## Test statistic = -1.198, p-value = 0.2309
+## difference in locations = 0
+## 
+## alternative hypothesis: true difference in locations is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 \subsection{Wilcoxon signed rank test for clustered data}
@@ -541,14 +638,43 @@ and \code{y} contains observations after the treatment.
 This manner of input is restricted to the signed rank
 test.
 
-<<signed rank test for balanced data>>=
-## Large sample signed rank test for clustered data
-data(crsd)
-cluswilcox.test(z, cluster = id, data = crsd)
-## Small sample test
-data(crsd)
-cluswilcox.test(z, cluster = id, data = crsd, permutation = TRUE)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Large sample signed rank test for clustered data}
+\hlkwd{data}\hlstd{(crsd)}
+\hlkwd{cluswilcox.test}\hlstd{(z,} \hlkwc{cluster} \hlstd{= id,} \hlkwc{data} \hlstd{= crsd)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon signed rank test for clutered data
+## 
+## data:  z, cluster: id from crsd
+## rank statistic = -110
+## Variance of  rank statistic = 30178
+## test statistic = -0.63321, p-value = 0.5266
+## total number of observations = 40, total number of clusters = 20
+## 
+## alternative hypothesis: true location shift is not equal to 0
+\end{verbatim}
+\begin{alltt}
+\hlcom{## Small sample test}
+\hlkwd{data}\hlstd{(crsd)}
+\hlkwd{cluswilcox.test}\hlstd{(z,} \hlkwc{cluster} \hlstd{= id,} \hlkwc{data} \hlstd{= crsd,} \hlkwc{permutation} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon signed rank test for clutered data using permutation
+## 
+## data:  z, cluster: id from crsd
+## rank statistic = -110
+## p-value = 0.524
+## total number of observations = 40, total number of clusters = 20
+## 
+## alternative hypothesis: true location shift is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \subsubsection{Unbalanced Data}
 \label{ubsign}
@@ -573,10 +699,26 @@ where $\hat{w}_i = g_i/[\widehat{Var}(S_{ij})\{1 + (g_i-1)\hat{\rho}_{s,cor}\}]$
 }^2 = \sum_{i=1}^m\sum_{j=1}^{g_i}(S_{ij} - \bar{S}_i)^2/(G-m), \hat{\sigma}^2_A = $ max $[\{\sum_{i=1}^mg_i(\bar{S_i}- \bar{\bar{S}})^2/(m-1)- \hat{\sigma}^2\}/g_0,0], g_0 = [\sum_{i=1}^mg_i - \sum_{i=1}^mg_i^2/\sum_{i=1}^mg_i]/(m-1)$ and $\widehat{Var}(S_{ij}) = \sum_{i=1}^m\sum_{j=1}^{g_i}(S_{ij} - \bar{\bar{S}})^2/(G-1)$.
 
 An illustration of use of the test is as following:
-<<signed rank test for unbalanced data>>=
-data(crsdUnb)
-cluswilcox.test(z, cluster = id, data = crsdUnb)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(crsdUnb)}
+\hlkwd{cluswilcox.test}\hlstd{(z,} \hlkwc{cluster} \hlstd{= id,} \hlkwc{data} \hlstd{= crsdUnb)}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon signed rank test for clutered data
+## 
+## data:  z, cluster: id from crsdUnb
+## adjusted rank statistic = -0.015709
+## Variance of  adjusted rank statistic = 0.00123
+## test statistic = -0.44794, p-value = 0.6542
+## total number of observations = 748, total number of clusters = 142
+## The signed rank test statistics is adjusted since the data is unbalanced.
+## alternative hypothesis: true location shift is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 
@@ -633,21 +775,55 @@ The data set contains 7 variables: ID is the
 subject identifier which is the cluster id.
 
 
-<<CARMS1234>>=
-## Carry out clustered rank sum test for the subset
-## with CARMS grade 1, 2, 3 and 4.
-data(sedlab)
-cluswilcox.test(CARMS ~ cluster(ID) + stratum(Agesex) + group(Variant),
-                data = sedlab, subset = CARMS %in% c(1, 2, 3, 4))
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Carry out clustered rank sum test for the subset}
+\hlcom{## with CARMS grade 1, 2, 3 and 4.}
+\hlkwd{data}\hlstd{(sedlab)}
+\hlkwd{cluswilcox.test}\hlstd{(CARMS} \hlopt{~} \hlkwd{cluster}\hlstd{(ID)} \hlopt{+} \hlkwd{stratum}\hlstd{(Agesex)} \hlopt{+} \hlkwd{group}\hlstd{(Variant),}
+                \hlkwc{data} \hlstd{= sedlab,} \hlkwc{subset} \hlstd{= CARMS} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{3}\hlstd{,} \hlnum{4}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon rank sum test for clutered data
+## 
+## data:  CARMS from sedlab, stratum: Agesex, cluster: ID, group: Variant,
+## Rank sum statistic = 8792
+## Expected value of rank sum statistic = 10867
+## Variance of rank sum statistic = 258650
+## Test statistic = -4.0797, p-value = 4.509e-05
+## difference in locations = 0
+## The data is unbalanced
+## alternative hypothesis: true difference in locations is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
-<<CARMS1235>>=
-## Carry out clustered rank sum test for the subset
-## with CARMS grade 1, 2, 3 and 5.
-data(sedlab)
-cluswilcox.test(CARMS ~ cluster(ID) + stratum(Agesex) + group(Variant),
-                data = sedlab, subset = CARMS %in% c(1, 2, 3, 5))
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Carry out clustered rank sum test for the subset}
+\hlcom{## with CARMS grade 1, 2, 3 and 5.}
+\hlkwd{data}\hlstd{(sedlab)}
+\hlkwd{cluswilcox.test}\hlstd{(CARMS} \hlopt{~} \hlkwd{cluster}\hlstd{(ID)} \hlopt{+} \hlkwd{stratum}\hlstd{(Agesex)} \hlopt{+} \hlkwd{group}\hlstd{(Variant),}
+                \hlkwc{data} \hlstd{= sedlab,} \hlkwc{subset} \hlstd{= CARMS} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{3}\hlstd{,} \hlnum{5}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## 
+## 	Wilcoxon rank sum test for clutered data
+## 
+## data:  CARMS from sedlab, stratum: Agesex, cluster: ID, group: Variant,
+## Rank sum statistic = 14502
+## Expected value of rank sum statistic = 15583
+## Variance of rank sum statistic = 340860
+## Test statistic = -1.8519, p-value = 0.06404
+## difference in locations = 0
+## The data is unbalanced
+## alternative hypothesis: true difference in locations is not equal to 0
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 When controlled for the stratification covariate \code{Agesex},
 the p-value for CARMS grades 1-4 is less than $0.001$,

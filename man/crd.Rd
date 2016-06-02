@@ -3,22 +3,20 @@
 \docType{data}
 \name{crd}
 \alias{crd}
-\title{Clustered non-stratified data}
-\format{A data frame with 340 rows and 3 variables}
+\title{Clustered Non-Stratified Data for Testing Clustered Rank Sum Test}
+\format{A data frame with 340 observations on 3 variables.
+
+[, 1] id    cluster id
+[, 2] z     score
+[, 3] group group id}
 \source{
 \url{https://sites.google.com/a/channing.harvard.edu/bernardrosner/channing/incorporating-cluster-effects-for-
 the-wilcoxon-rank-sum-test-1/cluswilcox/sample_data}
 }
 \description{
-non-stratified data include 3 variables:
+Non-stratified data including 3 variables:
  id, z, group. Have some missing values.
 }
-\details{
-\itemize{
-  \item id. cluster id
-  \item z. observed score
-  \item group. group id
-}
-}
 \keyword{datasets}
+\keyword{internal}
 
