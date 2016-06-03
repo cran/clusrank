@@ -7,7 +7,9 @@
 \format{A data frame with 340 observations on 3 variables.
 
 [, 1] id    cluster id
+
 [, 2] z     score
+
 [, 3] group group id}
 \source{
 \url{https://sites.google.com/a/channing.harvard.edu/bernardrosner/channing/incorporating-cluster-effects-for-

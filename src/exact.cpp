@@ -151,7 +151,7 @@ double pcrksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector xn, I
 
 //[[Rcpp::export]]
 void test(int depth, int max) {
-  int* slots = (int*)alloca(sizeof(int) * depth);
+  IntegerVector slots(depth);
   for( int i = 0; i < depth; i ++ ) {
     slots[i] = 0;
   }
@@ -220,7 +220,7 @@ int csrkg(int srk, IntegerVector Score) {
 
 double psrkg(int srk, IntegerVector Score) {
   int n = Score.size();
-  double N = pow(n, 2), p = 0;
+  double N = pow(2.0, n), p = 0;
   p = csrkg(srk, Score);
   p = p / N;
   return(p);
