@@ -3,7 +3,7 @@
 ##' Performs one-sample and two-sample Wilcoxon test for clutered data
 ##' on vectors of data.
 ##'
-##' @param x A numeric vector of data values. Non-finite (e.g.,
+##' @param x A numeric vector of data values or a formula. Non-finite (e.g.,
 ##'     infinite or missing) values will be omitted
 ##' @param y An optional numeric vector of data values: as with
 ##'     \code{x} non-finite values will be omitted
@@ -37,8 +37,6 @@
 ##'     initial letter
 ##' @param mu A number specifying an optional parameter used to form
 ##'     the null hypothesis. See 'Details'
-##' @param DNAME An optional character string for data name when
-##'     printing the result
 ##' @param ... Further arguments to be passed to or from methods
 ##' @details The formula interface is only applicable for the
 ##'     {m}-sample rank sum tests \eqn{m \ge 2}. If the data are saved
@@ -48,10 +46,11 @@
 ##'     written as \code{z ~ cluster(id) + group(grp) +
 ##'     stratum(strat)}. The \code{group} variable is required.
 ##'
-##' If both \code{x} and \code{y} are given or only \code{x} is given
-##' and \code{paired} is \code{TRUE}, a clustered Wilcoxon signed rank
-##' test of the null that the distribution of \code{x - y} or of
-##' \code{x} is symmetric about \code{mu} is performed.
+##' Given the cluster id, if both \code{x} and \code{y} are provided
+##' or only \code{x} is provided and \code{paired} is \code{TRUE}, a
+##' clustered Wilcoxon signed rank test of the null hypothesis that
+##' the distribution of \code{x - y} or of \code{x} is symmetric about
+##' \code{mu} is performed.
 ##'
 ##' Otherwise, if only \code{x} is given and \code{paired} is
 ##' \code{FALSE}, a Wilcoxon rank sum test is carried out. In this
@@ -66,6 +65,7 @@
 ##' are the same for data in all groups and the alternative is that
 ##' they are not all the same.
 ##'
+##' 
 ##' If \code{cluster} is not provided, the default is that there is no
 ##' clutering in the data. Both \code{"rgl"} and \code{"ds"} method
 ##' support balanced and unbalanced data (cluster size is identical or
@@ -76,9 +76,14 @@
 ##' test.
 ##'
 ##' The exact test is still under development and is only available
-##' for ranksum test and signed rank test when the \code{method} is
-##' \code{"rgl"}. Currently the exact test is not recommended.
+##' for ranksum test when treatment is assigned at cluster level and
+##' signed rank test for \code{rgl} method and can be applied when
+##' number of cluster is small (under 50). It will be slow if number
+##' of cluster is too large.
 ##'
+##' There is also a formula interface for both tests. For details look
+##' at the examples.
+##' 
 ##' @return A list with class \code{"ctest"}.
 ##'
 ##' \item{Rstat}{The value of the rank statistic with a name discribing it}
@@ -97,6 +102,8 @@
 #' ## Clustered signed rank test using RGL method.
 #' data(crsd)
 #' cluswilcox.test(z, cluster = id, data = crsd, paired = TRUE)
+#' ## or
+#' cluswilcox.test(z ~ cluster(id), data = crsd, paired = TRUE)
 #' \dontrun{cluswilcox.test(z, cluster = id, data = crsd)
 #' ## Default is rank sum test. The group variable is required.}
 #' ## Clustered rank sum test using RGL method.
@@ -136,7 +143,9 @@ cluswilcox.test <- function(x, ...) {
     pars <- as.list(match.call()[-1])
     if(!is.null(pars$data)) {
         data.temp <- eval(pars$data, parent.frame())
-    }
+    } else {
+        data.temp <- NULL
+        }
     if(!is.null(data.temp) & length(pars$x) == 1) {
         if(is.data.frame(data.temp) & any(as.character(pars$x)
             %in% names(data.temp))) {
@@ -155,7 +164,11 @@ cluswilcox.test <- function(x, ...) {
 #' @export
 
 
-cluswilcox.test.formula <- function(formula, data = NULL, subset = NULL, na.action = na.omit, ...)
+cluswilcox.test.formula <- function(formula, data = parent.frame(), subset = NULL,
+                                    na.action = na.omit,
+                                    alternative = c("two.sided", "less", "greater"),
+                                    mu = 0, paired = FALSE, exact = FALSE,
+                                    method = c("rgl", "ds"),  ...)
 {
     if(missing(formula) ||
        (length(formula) != 3L)) {
@@ -177,6 +190,8 @@ cluswilcox.test.formula <- function(formula, data = NULL, subset = NULL, na.acti
     m$formula <- if(missing(data)) terms(formula, special)
                  else terms(formula, special, data = data)
 
+    m <- if(missing(data)) m <- m[1 : 2]
+         else m <- m[1 : 3]
     mf <- eval(m, parent.frame())
     Terms <- terms(mf)
 
@@ -251,7 +266,9 @@ cluswilcox.test.formula <- function(formula, data = NULL, subset = NULL, na.acti
     y <- do.call("cluswilcox.test.default",
                  c( list(x = x, cluster = cluster,
                          group = group, stratum = stratum,
-                         DNAME = DNAME),
+                         DNAME = DNAME, paired = paired,
+                         alternative = alternative,
+                         method = method, mu = mu, exact = exact),
                    list(...)))
     return(y)
 }
@@ -265,34 +282,35 @@ cluswilcox.test.default <- function(x, y = NULL, cluster = NULL,
             group = NULL, stratum = NULL, data = parent.frame(),
             alternative = c("two.sided", "less", "greater"),
             mu = 0, paired = FALSE, exact = FALSE,
-            method = c("rgl", "ds"), DNAME = NULL, ...) {
+            method = c("rgl", "ds"), ...) {
     alternative <- match.arg(alternative)
     method <- match.arg(method)
-      pars <- as.list(match.call()[-1])
-
+    pars <- as.list(match.call()[-1])
+    
     if (!missing(mu) && ((length(mu) > 1L) || !is.finite(mu)))
         stop("'mu' must be a single number")
+    DNAME <- list(...)$"DNAME"
     if(is.null(DNAME))  {
- if(!is.null(pars$data)) {
+        if(!is.null(pars$data)) {
             x <- data[, as.character(pars$x)]
             DNAME <- (pars$x)
-              if(!is.null(pars$y)) {
+            if(!is.null(pars$y)) {
                   y <- data[, as.character(pars$y)]
                   DNAME <- paste(DNAME, "and", pars$y)
-                } else {
-                    y <- NULL
-                  }
+            } else {
+                y <- NULL
+            }
             if(!is.null(pars$cluster)) {
                 cluster <- data[, as.character(pars$cluster)]
                 DNAME <- paste0(DNAME, ", cluster: ", pars$cluster)
-              } else {
-                  cluster <- NULL
-              }
-            if(!is.null(pars$group)) {
-              group <- data[, as.character(pars$group)]
-              DNAME <- paste0(DNAME, ", group: ", pars$group)
             } else {
-              group <- NULL
+                cluster <- NULL
+            }
+            if(!is.null(pars$group)) {
+                group <- data[, as.character(pars$group)]
+                DNAME <- paste0(DNAME, ", group: ", pars$group)
+            } else {
+                group <- NULL
             }
             if(!is.null(pars$stratum)) {
               stratum <- data[, as.character(pars$stratum)]
@@ -401,8 +419,8 @@ cluswilcox.test.default <- function(x, y = NULL, cluster = NULL,
         }
         x <- x - mu
         METHOD <- "Clustered Wilcoxon signed rank test"
-       if(toupper(method) == "RGL") {
-           METHOD <- paste(METHOD, "using RGL method", sep = " ")
+       if((method) == "rgl") {
+           METHOD <- paste(METHOD, "using rgl method", sep = " ")
            arglist <- setNames(list(x, cluster, alternative, mu, METHOD,
                                     DNAME, exact),
                             c("x", "cluster", "alternative",
@@ -412,8 +430,8 @@ cluswilcox.test.default <- function(x, y = NULL, cluster = NULL,
             return(result)
         }
 
-        if(toupper(method) == "DS") {
-            METHOD <- paste(METHOD, "using DS method", sep = " ")
+        if((method) == "ds") {
+            METHOD <- paste(METHOD, "using ds method", sep = " ")
              arglist <- setNames(list(x, cluster, alternative, mu, METHOD, DNAME),
                             c("x", "cluster", "alternative",
                               "mu",
@@ -427,7 +445,7 @@ cluswilcox.test.default <- function(x, y = NULL, cluster = NULL,
         
     } else {
         METHOD <- "Clustered Wilcoxon rank sum test"
-        if(toupper(method) == "RGL") {
+        if((method) == "rgl") {
             METHOD <- paste( METHOD, "using Rosner-Glynn-Lee method", sep = " ")
              arglist <- setNames(list(x, cluster, group, stratum, alternative,
                                  mu, DNAME, METHOD, exact),
@@ -438,7 +456,7 @@ cluswilcox.test.default <- function(x, y = NULL, cluster = NULL,
             return(result)
         }
 
-        if(toupper(method) == "DS") {
+        if((method) == "ds") {
             METHOD <- paste(METHOD, "using Datta-Satten method", sep = " ")
             ## FIXME: The length of the list and the name do not match!
             arglist <- setNames(list(x, cluster, group, mu, alternative,

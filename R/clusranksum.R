@@ -1,16 +1,26 @@
 cluswilcox.test.ranksum.rgl <- function(x, cluster, group, stratum,
                                          alternative, exact, mu,
-                                         DNAME = NULL, METHOD = NULL) {
-    l.clus.grp <- length(unlist(lapply(split(cluster, group), unique)))
+                                        DNAME = NULL, METHOD = NULL) {
+    clus.grp <- lapply(split(cluster, group), unique)
+    l.clus.grp <- length(unlist(clus.grp))
     l.clus <- length(unique(cluster))
-     arglist <- setNames(list(x, cluster, group, stratum, alternative,
-                                 mu, DNAME, METHOD, exact),
-                            c("x", "cluster", "group", "stratum",
-                              "alternative", "mu", "DNAME", "METHOD",
-                              "exact"))
+    temp <- merge(table(cluster), cbind(cluster, group))
+    temp <- temp[order(temp$Freq), ]
+    temp <- split(temp$group, temp$Freq)
+    check <- lapply(temp, function(x) length(unique(x)))
+    ## check with each stratum in which clusters have the same cluster size 
+    ## to see if they only are only assigned a single treatment.
+    if(all(unlist(check) == 1))  warning("For each of the stratum of the data when data are
+                      stratified by the cluster size,
+                      there should be at least one stratum with both treatments ")
+    arglist <- setNames(list(x, cluster, group, stratum, alternative,
+                             mu, DNAME, METHOD, exact),
+                        c("x", "cluster", "group", "stratum",
+                          "alternative", "mu", "DNAME", "METHOD",
+                          "exact"))
     if(l.clus != l.clus.grp) {
-            result <- do.call("cluswilcox.test.ranksum.rgl.sub", c(arglist))
-         return(result)
+        result <- do.call("cluswilcox.test.ranksum.rgl.sub", c(arglist))
+        return(result)
     } else {
         result <- do.call("cluswilcox.test.ranksum.rgl.clus", c(arglist))
         return(result)
@@ -359,6 +369,7 @@ cluswilcox.test.ranksum.ds <- function(x, cluster, group,
     if(group.uniq == 1) {
         stop("invalid group variable, should contain at least 2 groups")
     }
+    
     n.obs <- length(x)
     
     Fhat <- numeric(n.obs)
@@ -386,13 +397,18 @@ cluswilcox.test.ranksum.ds <- function(x, cluster, group,
         group <- recoderFunc(group, order(unique(group)), c(0, 1))
         x[which(group == 0)] <- x[which(group == 0)] - mu
         ni1 <- aggregate(group ~ cluster, FUN = sum)[, 2] # number of obs under trt 2 in each cluster
-        ## Calculate S = E(W*|W, g)
-        S <- 0
-        for( i in 1 : M) {
-            S <- S + sum(group[cluster == cluster.uniq[i]] /
-                         ni[i] * ( 1 + F.prop[cluster == cluster.uniq[i]]))
+        if(all(ni1 / ni) == 0.5) {
+            warning("The DS ranksum test is not reliable for colateral data where each cluster is equally split between the 2 treatments.")
         }
-        
+        ## Calculate S = E(W*|W, g)
+        ##  S <- 0
+        Ni <- rep.int(ni, times = ni)
+        S <- sum(group / Ni * (1 + F.prop))
+        ##       for( i in 1 : M) {
+        ##         S <- S + sum(group[cluster == cluster.uniq[i]] /
+        ##                      ni[i] * ( 1 + F.prop[cluster == cluster.uniq[i]]))
+        ##    }
+        ##   
         S <- S / (M + 1)
         
         ## Calculate E(S)
@@ -470,19 +486,19 @@ cluswilcox.test.ranksum.ds <- function(x, cluster, group,
 
         dev.W <- What - EW
         V <- matrix(0, m, m)
-  for( i in 1 : M) {
-      V <- V + dev.W[, i] %*% t(dev.W[, i])
-  }
+        for( i in 1 : M) {
+            V <- V + dev.W[, i] %*% t(dev.W[, i])
+        }
         V <- V / M
         T <- t(Sj - ESj) %*% ginv(V) %*% (Sj - ESj) / M
         pval <- pchisq(T, df = (m - 1),lower.tail = F)
-        names(T) <- "test statistic"
-        ngrp <- group.uniq
+        names(T) <- "chi-square test statistic"
+        ngrp <- length(group.uniq)
         df <- ngrp - 1
         names(ngrp) <- "number of groups: "
         names(df) <- "degree of freedom: "
-        METHOD <- paste(METHOD, "using Chisq test")
-#calculate the test statistic
+        METHOD <- paste(METHOD, "using Chi-square test")
+                                        #calculate the test statistic
         result <- list(statistic = T, p.value = pval, n.group = ngrp,
                        df = df,
                        data.name = DNAME, method = METHOD)

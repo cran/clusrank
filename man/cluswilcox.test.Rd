@@ -8,16 +8,18 @@
 \usage{
 cluswilcox.test(x, ...)
 
-\method{cluswilcox.test}{formula}(formula, data = NULL, subset = NULL,
-  na.action = na.omit, ...)
+\method{cluswilcox.test}{formula}(formula, data = parent.frame(),
+  subset = NULL, na.action = na.omit, alternative = c("two.sided", "less",
+  "greater"), mu = 0, paired = FALSE, exact = FALSE, method = c("rgl",
+  "ds"), ...)
 
 \method{cluswilcox.test}{default}(x, y = NULL, cluster = NULL,
   group = NULL, stratum = NULL, data = parent.frame(),
   alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE,
-  exact = FALSE, method = c("rgl", "ds"), DNAME = NULL, ...)
+  exact = FALSE, method = c("rgl", "ds"), ...)
 }
 \arguments{
-\item{x}{A numeric vector of data values. Non-finite (e.g.,
+\item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
 infinite or missing) values will be omitted}
 
 \item{...}{Further arguments to be passed to or from methods}
@@ -37,19 +39,6 @@ observations to be used.}
 \item{na.action}{A function which indicates what should happen
 when the data contain NAs. Defaults to getOption("na.action").}
 
-\item{y}{An optional numeric vector of data values: as with
-\code{x} non-finite values will be omitted}
-
-\item{cluster}{A optional numeric vector of cluster id. Does not
-apply to the formula interface}
-
-\item{group}{A optional numeric vector of treatment id. Does not
-apply to the formula interface}
-
-\item{stratum}{A opptional numeric vector of stratum id. Only
-applies for the \code{"rgl"} method. Does not apply to the
-formula interface.}
-
 \item{alternative}{A character string specifying the alternative
 hypothesis, must be one of \code{"two sided"} (default),
 \code{"greater"} or \code{"less"}. You can specify just the
@@ -67,8 +56,18 @@ be computed. Not recommended currently.}
 clustered wilcoxon rank test used, must be one of \code{"rgl"}
 or \code{"ds"}}
 
-\item{DNAME}{An optional character string for data name when
-printing the result}
+\item{y}{An optional numeric vector of data values: as with
+\code{x} non-finite values will be omitted}
+
+\item{cluster}{A optional numeric vector of cluster id. Does not
+apply to the formula interface}
+
+\item{group}{A optional numeric vector of treatment id. Does not
+apply to the formula interface}
+
+\item{stratum}{A opptional numeric vector of stratum id. Only
+applies for the \code{"rgl"} method. Does not apply to the
+formula interface.}
 }
 \value{
 A list with class \code{"ctest"}.
@@ -98,10 +97,11 @@ The formula interface is only applicable for the
     written as \code{z ~ cluster(id) + group(grp) +
     stratum(strat)}. The \code{group} variable is required.
 
-If both \code{x} and \code{y} are given or only \code{x} is given
-and \code{paired} is \code{TRUE}, a clustered Wilcoxon signed rank
-test of the null that the distribution of \code{x - y} or of
-\code{x} is symmetric about \code{mu} is performed.
+Given the cluster id, if both \code{x} and \code{y} are provided
+or only \code{x} is provided and \code{paired} is \code{TRUE}, a
+clustered Wilcoxon signed rank test of the null hypothesis that
+the distribution of \code{x - y} or of \code{x} is symmetric about
+\code{mu} is performed.
 
 Otherwise, if only \code{x} is given and \code{paired} is
 \code{FALSE}, a Wilcoxon rank sum test is carried out. In this
@@ -116,6 +116,7 @@ levels, the null hypothesis is that the locations
 are the same for data in all groups and the alternative is that
 they are not all the same.
 
+
 If \code{cluster} is not provided, the default is that there is no
 clutering in the data. Both \code{"rgl"} and \code{"ds"} method
 support balanced and unbalanced data (cluster size is identical or
@@ -126,8 +127,13 @@ If \code{method} is \code{"rgl"}, then a strafication variable,
 test.
 
 The exact test is still under development and is only available
-for ranksum test and signed rank test when the \code{method} is
-\code{"rgl"}. Currently the exact test is not recommended.
+for ranksum test when treatment is assigned at cluster level and
+signed rank test for \code{rgl} method and can be applied when
+number of cluster is small (under 50). It will be slow if number
+of cluster is too large.
+
+There is also a formula interface for both tests. For details look
+at the examples.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -142,6 +148,8 @@ Exact tests are not recommended in the current version of package.
 ## Clustered signed rank test using RGL method.
 data(crsd)
 cluswilcox.test(z, cluster = id, data = crsd, paired = TRUE)
+## or
+cluswilcox.test(z ~ cluster(id), data = crsd, paired = TRUE)
 \dontrun{cluswilcox.test(z, cluster = id, data = crsd)
 ## Default is rank sum test. The group variable is required.}
 ## Clustered rank sum test using RGL method.
