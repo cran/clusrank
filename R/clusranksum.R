@@ -397,7 +397,7 @@ cluswilcox.test.ranksum.ds <- function(x, cluster, group,
         group <- recoderFunc(group, order(unique(group)), c(0, 1))
         x[which(group == 0)] <- x[which(group == 0)] - mu
         ni1 <- aggregate(group ~ cluster, FUN = sum)[, 2] # number of obs under trt 2 in each cluster
-        if(all(ni1 / ni) == 0.5) {
+        if(all(ni1 / ni == 0.5)) {
             warning("The DS ranksum test is not reliable for colateral data where each cluster is equally split between the 2 treatments.")
         }
         ## Calculate S = E(W*|W, g)

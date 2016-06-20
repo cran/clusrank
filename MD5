@@ -1,7 +1,7 @@
-d6025d2cb15547e448710c1eaf043aa5 *DESCRIPTION
+133e7e40d15359bc8495678a4066ae96 *DESCRIPTION
 782187edc22cf3233c1a16f1d4186220 *NAMESPACE
 39f10810025bc7ada4052a469b260fbb *R/RcppExports.R
-7cd6c9d76d818127cdfe152194645126 *R/clusranksum.R
+f8d6b47112999b6f21946ea788cd0d85 *R/clusranksum.R
 c9fb1e81110466611a3dda359866a5b3 *R/clussignrank.R
 9f7417709d70e60259c59af3e38d7a8e *R/cluswilcox.R
 e38548ab2f87990f649d6cc6951f662d *R/crd.R
@@ -26,4 +26,4 @@ fd8fb60b07b0b20a3a029aefe8797c27 *man/print.ctest.Rd
 c4c7a2675365e41d7d175aa73a6f6e18 *man/stratum.Rd
 3ba82fd66d93f97812d7ee6e9a63152f *src/Fprop.cpp
 edae7910cc5e85d7abe272867ad3290e *src/RcppExports.cpp
-4ffa133df899117010bc46a3d018e0f7 *src/exact.cpp
+84e8572b5a00f07cfe8c4ff2850fd55e *src/exact.cpp
