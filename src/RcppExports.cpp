@@ -5,44 +5,17 @@
 
 using namespace Rcpp;
 
-// crksum
-int crksum(int rks, int I, int J, int sumrks, int minrks);
-RcppExport SEXP clusrank_crksum(SEXP rksSEXP, SEXP ISEXP, SEXP JSEXP, SEXP sumrksSEXP, SEXP minrksSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< int >::type rks(rksSEXP);
-    Rcpp::traits::input_parameter< int >::type I(ISEXP);
-    Rcpp::traits::input_parameter< int >::type J(JSEXP);
-    Rcpp::traits::input_parameter< int >::type sumrks(sumrksSEXP);
-    Rcpp::traits::input_parameter< int >::type minrks(minrksSEXP);
-    __result = Rcpp::wrap(crksum(rks, I, J, sumrks, minrks));
-    return __result;
-END_RCPP
-}
-// pcrksum
-double pcrksum(int rks, int I, IntegerVector Score);
-RcppExport SEXP clusrank_pcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< int >::type rks(rksSEXP);
-    Rcpp::traits::input_parameter< int >::type I(ISEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
-    __result = Rcpp::wrap(pcrksum(rks, I, Score));
-    return __result;
-END_RCPP
-}
 // cumcrksum
-IntegerMatrix cumcrksum(int rks, int I, IntegerVector Score);
-RcppExport SEXP clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP) {
+IntegerMatrix cumcrksum(int rks, int I, IntegerVector Score, int Csize);
+RcppExport SEXP clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP, SEXP CsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< int >::type rks(rksSEXP);
     Rcpp::traits::input_parameter< int >::type I(ISEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
-    __result = Rcpp::wrap(cumcrksum(rks, I, Score));
+    Rcpp::traits::input_parameter< int >::type Csize(CsizeSEXP);
+    __result = Rcpp::wrap(cumcrksum(rks, I, Score, Csize));
     return __result;
 END_RCPP
 }
@@ -73,18 +46,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type n(nSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type max(maxSEXP);
     __result = Rcpp::wrap(pcrksum_str(k, x, xc, xn, n, max));
-    return __result;
-END_RCPP
-}
-// csrkg
-int csrkg(int srk, IntegerVector Score);
-RcppExport SEXP clusrank_csrkg(SEXP srkSEXP, SEXP ScoreSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< int >::type srk(srkSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
-    __result = Rcpp::wrap(csrkg(srk, Score));
     return __result;
 END_RCPP
 }

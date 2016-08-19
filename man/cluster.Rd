@@ -23,12 +23,8 @@ THe function's only action is semantic, to mark
 a variable as the cluster indicator. If not supplied,
 will assume no cluster in the data.
 }
-\examples{
-data(crd)
-cluswilcox.test(z ~ cluster(id) + group(group), data = crd)
-}
 \seealso{
-\code{\link{cluswilcox.test.formula}}
+\code{\link{clusWilcox.test.formula}}
 }
 \keyword{internal}
 

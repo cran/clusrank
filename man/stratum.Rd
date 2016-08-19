@@ -20,12 +20,8 @@ THe function's only action is semantic, to mark
 a variable as the stratum indicator. If not supplied,
 will assume no stratification in the data.
 }
-\examples{
-data(crdStr)
-cluswilcox.test(z ~ cluster(id) + group(group) + stratum(stratum), data = crdStr)
-}
 \seealso{
-cluswilcox.test.formula
+clusWilcox.test.formula
 }
 \keyword{internal}
 
