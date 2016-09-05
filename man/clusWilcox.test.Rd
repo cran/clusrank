@@ -20,71 +20,73 @@ clusWilcox.test(x, ...)
 }
 \arguments{
 \item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
-infinite or missing) values will be omitted}
+infinite or missing) values will be omitted.}
 
-\item{...}{Further arguments to be passed to or from methods}
+\item{...}{Further arguments to be passed to or from methods.}
 
 \item{formula}{A formula of the form \code{lhs ~ rhs} where the
-\code{lhs} is the observed values and
-the \code{rhs} of the form group + \code{cluster}(x1) +
+\code{lhs} is the measurements and
+the \code{rhs} is of the form group + \code{cluster}(x1) +
 \code{stratum}(x2) for clustered rank sum test, where
 \code{x1} and \code{x2} are cluster id and stratum id in the
-data.  For clustered signed rank test, only \code{cluster}(x1)
-should appear on the right hand side.}
+data frame \code{data}. For clustered signed rank test, the
+\code{rhs} only contains \code{cluster}{x1}.}
 
-\item{data}{An optional matrix or dataframe of data used in the
-formula.}
+\item{data}{An optional dataframe containing the variables.}
 
 \item{subset}{An optional vector specifying a subset of
 observations to be used.}
 
 \item{na.action}{A function which indicates what should happen
-when the data contain NAs. Defaults to getOption("na.action").}
+when the data contain NAs. Defaults to \code{getOption("na.action")}.}
 
 \item{alternative}{A character string specifying the alternative
 hypothesis, must be one of \code{"two sided"} (default),
 \code{"greater"} or \code{"less"}. You can specify just the
-initial letter}
+initial letter.}
 
 \item{mu}{A number specifying an optional parameter used to form
-the null hypothesis. See 'Details'}
+the null hypothesis. Default is 0. See 'Details'.}
 
-\item{paired}{A logical indicating whether you want a paired test}
+\item{paired}{A logical indicating whether you want a paired test.}
 
 \item{exact}{A logical indicating whether an exact p-value should
-be computed. Not recommended currently.}
+be computed. Only available for \code{rgl} signed rank test
+and \code{rgl} rank sum test when treatment is assigned at
+cluster leve.}
 
 \item{method}{A character string specifying the method of
-clustered wilcoxon rank test used, must be one of \code{"rgl"}
-or \code{"ds"}}
+clustered wilcoxon rank test to be use, should be one of
+\code{"rgl"} or \code{"ds"}.}
 
-\item{y}{An optional numeric vector of data values: as with
-\code{x} non-finite values will be omitted}
+\item{y}{An optional numeric vector of data values, non-finite
+values will be omitted.}
 
-\item{cluster}{A optional numeric vector of cluster id. Does not
-apply to the formula interface}
+\item{cluster}{An optional numeric vector of cluster id.}
 
-\item{group}{A optional numeric vector of treatment id. Does not
-apply to the formula interface}
+\item{group}{An optional numeric vector of treatment id.}
 
-\item{stratum}{A opptional numeric vector of stratum id. Only
-applies for the \code{"rgl"} method. Does not apply to the
-formula interface.}
+\item{stratum}{An opptional numeric vector of stratum id. Only
+available for \code{rgl} rank sum test when treatment is assigned at
+    cluster level.}
 }
 \value{
-A list with class \code{"ctest"}.
+A list with class \code{"htest"} containing the following components, for different test the components may vary:
 
-\item{Rstat}{The value of the rank statistic with a name discribing it}
-\item{ERstat}{The expectation of the rank statistic}
-\item{VRstat}{The variance of the rank statistic}
-\item{statistic}{The value of the test statistic}
-\item{p.value}{The p-value for the test}
-\item{null.value}{The location parameter \code{mu}}
-\item{method}{The type of test applied}
-\item{data.name}{A character string giving the names of the data}
-\item{balance}{A logical indicating whether the data are balanced}
-\item{n.group}{Number of treatment, is returned when there are more than 2 treatment groups}
-\item{df}{Degrees of freedom of chi-square distribution, is returned when there are more than 2 treatment groups}
+\item{Rstat}{the value of the rank statistic with a name describing it.}
+\item{ERstat}{the expectation of the rank statistic.}
+\item{VRstat}{the variance of the rank statistic.}
+\item{statistic}{the value of the test statistic with a name describing it.}
+\item{p.value}{the p-value for the test.}
+\item{alternative}{a character string describing the alternative hypothesis.}
+\item{null.value}{the location parameter 'mu'.}
+\item{method}{the type of test applied.}
+\item{data.name}{a character string giving the names of the data.}
+\item{balance}{a logical indicating whether the data set is balanced.}
+\item{n.group}{number of treatment, will be returned if there are more than 2 treatment groups and \code{ds} method is used.}
+\item{df}{degrees of freedom of chi-square distribution, will be returned when there are more than 2 treatment groups and \code{ds} method is used.}
+\item{n}{number of observations}
+\item{cn}{number of clusters}
 }
 \description{
 Performs one-sample and two-sample Wilcoxon test for clutered data
@@ -94,43 +96,36 @@ on vectors of data.
 The formula interface is to both clustered signed rank
     test and clustered rank sum test.
 
-Given the cluster id, if both \code{x} and \code{y} are provided
-or only \code{x} is provided and \code{paired} is \code{TRUE}, a
-clustered Wilcoxon signed rank test of the null hypothesis that
-the distribution of \code{x - y} or of \code{x} is symmetric about
-\code{mu} is performed.
+
+The default of \code{cluster} id is that there is one member in
+    each cluster. Both balanced data (identical cluster size) and
+    unbalanced data (different cluster sizes) are
+    supported in all tests provided in this package. For clustered
+    rank sum test, the data can either have treatment assigned at
+    cluster level or individual level.
+
+If both \code{x} and \code{y} are given or only \code{x} is given
+    and \code{paired} is \code{TRUE}, a clustered Wilcoxon signed
+    rank test of the null that the distribution of \code{x - y}
+    (paired sample) or of \code{x} (one sample) is symmetric about
+    \code{mu} is performed.
 
 Otherwise, if only \code{x} is given and \code{paired} is
-\code{FALSE}, a Wilcoxon rank sum test is carried out. In this
-case, the \code{group} variable is required. If the \code{method}
-is \code{"rgl"} (default), the null hypothesis is that the
-distributions of values from the two groups differ by a location
-shift of \code{mu} and the alternative is that they differ by some
-other location shift. If the \code{method} is \code{"ds"}, when
-the \code{group} has 2 levels, the null and hypothesis are the
-same as for \code{"rgl"} test; when \code{group} has more than 2
-levels, the null hypothesis is that the locations
-are the same for data in all groups and the alternative is that
-they are not all the same.
+\code{FALSE}, a Wilcoxon rank sum test is performed. In this case,
+measurements from different treatment groups should be combined in
+\code{x} and the \code{group} variable is required.  When there
+are two treatment groups, the null is that the distributions of
+values from the two groups differ by a location shift of \code{mu}
+and the alternative is that they differ by some other location
+shift.  When there are \code{m} (>= 2) treatment groups, \code{ds}
+method can test if the location of the \code{m} groups are
+identical or not.
 
+For RGL rank sum test when treatment is assigned at cluster level,
+    an extra stratification variable is allowed through \code{stratum}.
 
-If \code{cluster} is not provided, the default is that there is no
-clutering in the data. Both \code{"rgl"} and \code{"ds"} method
-support balanced and unbalanced data (cluster size is identical or
-varied) and individual level and cluster level treatment assignment.
-
-If \code{method} is \code{"rgl"}, then a strafication variable,
-\code{stratum}, is allowed for the clustered Wilcoxon rank sum
-test.
-
-The exact test is still under development and is only available
-for ranksum test when treatment is assigned at cluster level and
-signed rank test for \code{rgl} method and can be applied when
-number of cluster is small (under 50). It will be slow if number
-of cluster is too large.
-
-There is also a formula interface for both tests. For details look
-at the examples.
+The exact test is only available for RGL signed rank test and  RGL
+    rank sum test when treatment is assigned at cluster level.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -138,8 +133,12 @@ at the examples.
 
 \item \code{default}: Default \code{S3} method.
 }}
-\note{
-Exact tests are not recommended in the current version of package.
+\section{Warning}{
+
+This function can use large amounts of memory and stack if 'exact =
+    TRUE' and one sample is large (and even crash R if the stack
+    limit is exceeded). Not recommended for data set 
+    with number of clusters more than 50.
 }
 \examples{
 ## Clustered signed rank test using RGL method.
