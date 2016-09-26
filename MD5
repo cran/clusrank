@@ -1,8 +1,8 @@
-f463cf59c228374392c486f0efe2fda0 *DESCRIPTION
+d2b79fcf41f174bc1949f21af34b0e96 *DESCRIPTION
 8fe0119bf0a7b771985fb1a799bf003f *NAMESPACE
 53246c69771290ae7ce1510b6aa5f2cc *R/RcppExports.R
-6906fe57ae32b004256e08c5f6dceb40 *R/clusWilcox.R
-0564cfa8e56bcf849d43fcda1995b389 *R/clusranksum.R
+e2ef49a6f893ad15ca35cd46a8c687f3 *R/clusWilcox.R
+341d7512809a1d65dfbb0831efbc6455 *R/clusranksum.R
 aed5ec341d481919d3f675ccb1c250d9 *R/clussignrank.R
 e38548ab2f87990f649d6cc6951f662d *R/crd.R
 8403f5943c4074817520fafa3b5ec6dc *R/crdstr.R
@@ -10,7 +10,7 @@ e38548ab2f87990f649d6cc6951f662d *R/crd.R
 d3a902a587990786917c76590587df48 *R/crsdunb.R
 2cb14912fe9f8de51a5581fe27440fef *R/eye.R
 de4c59ddd8e55181c922146da6fff342 *R/recodeFun.R
-665ab377aba4f51692fd2373ba82fff4 *R/special.R
+434e5ca70127b417dce7d51203c6deb2 *R/special.R
 9070472bcfb198d763a980d25ee739b1 *data/crd.rda
 6c01aec47151870ea553bfea92095c00 *data/crdStr.rda
 1114c547eb0b62d4ab206e36a1d105fa *data/crsd.rda
