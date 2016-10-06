@@ -1,6 +1,6 @@
 Package: clusrank
 Date: 2016-9-25
-Version: 0.4-4
+Version: 0.4-5
 Title: Wilcoxon Rank Sum Test for Clustered Data
 Description: Non-parametric tests (Wilcoxon rank sum test and Wilcoxon signed rank test) for clustered data. 
 Imports: stats, MASS, Rcpp (>= 0.12.2)
@@ -15,10 +15,10 @@ LinkingTo: Rcpp
 LazyData: true
 RoxygenNote: 5.0.1
 NeedsCompilation: yes
-Packaged: 2016-09-26 03:42:24 UTC; root
+Packaged: 2016-10-06 00:41:19 UTC; root
 Author: Yujing Jiang [aut, cre],
   Mei-Ling Ting Lee [ctb],
   Jun Yan [ctb]
 Maintainer: Yujing Jiang <yujing.jiang@uconn.edu>
 Repository: CRAN
-Date/Publication: 2016-09-26 08:03:39
+Date/Publication: 2016-10-06 13:06:08
