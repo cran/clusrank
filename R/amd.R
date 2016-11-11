@@ -49,7 +49,7 @@
 #'     = 2, sex = 2; 6: agegroup = 3, sex = 2;
 #' }
 #'
-#' @name eye
+#' @name amd
 #' @docType data
 #' @note CARMS grades were assessed separately for
 #' the two advanced stages (4 and 5):
@@ -67,12 +67,12 @@
 #' JAMA Ophthalmol, 2015 Apr 16.
 #' \url{http://archopht.jamanetwork.com/article.aspx?articleid=2213742}.
 #' @examples
-#' data(eye)
-#' clusWilcox.test(CARMS ~ Variant + cluster(ID), data = eye,
+#' data(amd)
+#' clusWilcox.test(CARMS ~ Variant + cluster(ID), data = amd,
 #'                subset = CARMS %in% c(1, 2, 3, 4), method = "rgl")
-#' clusWilcox.test(CARMS ~ Variant + cluster(ID), data = eye,
+#' clusWilcox.test(CARMS ~ Variant + cluster(ID), data = amd,
 #'                subset = CARMS %in% c(1, 2, 3, 4), method = "ds")
-#' clusWilcox.test(CARMS ~ Variant + cluster(ID) + stratum(Agesex), data = eye,
+#' clusWilcox.test(CARMS ~ Variant + cluster(ID) + stratum(Agesex), data = amd,
 #'                subset = CARMS %in% c(1, 2, 3, 4))
 #' @keywords datasets internal
 

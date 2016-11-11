@@ -10,13 +10,13 @@ clusWilcox.test(x, ...)
 
 \method{clusWilcox.test}{formula}(formula, data = parent.frame(),
   subset = NULL, na.action = na.omit, alternative = c("two.sided", "less",
-  "greater"), mu = 0, paired = FALSE, exact = FALSE, method = c("rgl",
-  "ds"), ...)
+  "greater"), mu = 0, paired = FALSE, exact = FALSE, B = 2000,
+  method = c("rgl", "ds"), ...)
 
 \method{clusWilcox.test}{default}(x, y = NULL, cluster = NULL,
   group = NULL, stratum = NULL, data = NULL,
   alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE,
-  exact = FALSE, method = c("rgl", "ds"), ...)
+  exact = FALSE, B = 1, method = c("rgl", "ds"), ...)
 }
 \arguments{
 \item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
@@ -32,7 +32,7 @@ the \code{rhs} is of the form group + \code{cluster}(x1) +
 data frame \code{data}. For clustered signed rank test, the
 \code{rhs} only contains \code{cluster}{x1}.}
 
-\item{data}{An optional dataframe containing the variables.}
+\item{data}{An optional data frame containing the variables.}
 
 \item{subset}{An optional vector specifying a subset of
 observations to be used.}
@@ -50,13 +50,23 @@ the null hypothesis. Default is 0. See 'Details'.}
 
 \item{paired}{A logical indicating whether you want a paired test.}
 
-\item{exact}{A logical indicating whether an exact p-value should
-be computed. Only available for \code{rgl} signed rank test
-and \code{rgl} rank sum test when treatment is assigned at
-cluster leve.}
+\item{exact}{A logical indicating if a permutation test is to be
+used. If it is set as \code{FALSE}, then test based on
+large-sample theory is carried out. If it is set as
+\code{TRUE}, then a permutation test is carried out. There are
+two available permutation tests: exact permutation test is available for
+\code{rgl} signed rank test and \code{rgl} rank sum test when
+treatment is assigned at cluster level, random permutation
+test is available for all tests. For more details look at the
+description of the argument \code{B}.}
+
+\item{B}{An integer. If is set as 0, then exact permutation test is
+carried out. If is set as a positive integer, then random permutation
+is carried out, and B is the number of replicates drawn for
+the permutation test. Default is set as 2000 to ran a random permutation test.}
 
 \item{method}{A character string specifying the method of
-clustered wilcoxon rank test to be use, should be one of
+clustered Wilcoxon rank test to be use, should be one of
 \code{"rgl"} or \code{"ds"}.}
 
 \item{y}{An optional numeric vector of data values, non-finite
@@ -66,7 +76,7 @@ values will be omitted.}
 
 \item{group}{An optional numeric vector of treatment id.}
 
-\item{stratum}{An opptional numeric vector of stratum id. Only
+\item{stratum}{An optional numeric vector of stratum id. Only
 available for \code{rgl} rank sum test when treatment is assigned at
     cluster level.}
 }
@@ -83,13 +93,13 @@ A list with class \code{"htest"} containing the following components, for differ
 \item{method}{the type of test applied.}
 \item{data.name}{a character string giving the names of the data.}
 \item{balance}{a logical indicating whether the data set is balanced.}
-\item{n.group}{number of treatment, will be returned if there are more than 2 treatment groups and \code{ds} method is used.}
+\item{ngroup}{number of treatment, will be returned if there are more than 2 treatment groups and \code{ds} method is used.}
 \item{df}{degrees of freedom of chi-square distribution, will be returned when there are more than 2 treatment groups and \code{ds} method is used.}
-\item{n}{number of observations}
-\item{cn}{number of clusters}
+\item{nobs}{number of observations}
+\item{nclus}{number of clusters}
 }
 \description{
-Performs one-sample and two-sample Wilcoxon test for clutered data
+Performs one-sample and two-sample Wilcoxon test for clustered data
 on vectors of data.
 }
 \details{
@@ -137,7 +147,7 @@ The exact test is only available for RGL signed rank test and  RGL
 
 This function can use large amounts of memory and stack if 'exact =
     TRUE' and one sample is large (and even crash R if the stack
-    limit is exceeded). Not recommended for data set 
+    limit is exceeded). Not recommended for data set
     with number of clusters more than 50.
 }
 \examples{
@@ -167,7 +177,7 @@ Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2003)
 Sum Test: A Large-Sample Approach}. Biometrics, \bold{59}, 1089-1098.
 
 Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
-\emph{Extension of the Rank Sum Test for Clustered Data: 
+\emph{Extension of the Rank Sum Test for Clustered Data:
 Two-Group Comparisons with Group}. Biometrics, \bold{62}, 1251-1259.
 
 Somnath Datta, Glen A. Satten (2005) \emph{Rank-Sum Tests for Clustered Data}.

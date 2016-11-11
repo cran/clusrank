@@ -19,9 +19,10 @@
 ##   along with the R package clusrank. If not, see <http://www.gnu.org/licenses/>.
 ##
 ################################################################################
-clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
-                                           mu, exact, DNAME, METHOD) {
-    ### Ties are dropped
+clusWilcox.test.signedrank.rgl.exact <- function(x, cluster,
+                                                alternative,
+                                                mu, B, DNAME, METHOD) {
+    METHOD <- paste0(METHOD, " (random exactutation)")
     x <- x - mu
     data <- data.frame(x, cluster)
     data <- data[x != 0, ]
@@ -29,116 +30,118 @@ clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
     m <- length(cluster.size)
     n <- nrow(data)
     if (length(table(cluster.size)) != 1) {
-        balance = FALSE
+        balance <- FALSE
     } else {
-        balance = TRUE
+        balance <- TRUE
     }
-    
+
     xrank <- rank(abs(data$x))
     data <- cbind(data, xrank)
     signrank <- ifelse(data$x > 0, 1, -1) * data$xrank
     data <- cbind(data, signrank)
     colnames(data)[4] <- "signrank"
-    if (is.null(exact)) {
-        exact <- FALSE
+
+    srksum <-  stats::aggregate(signrank ~ cluster, FUN = sum)[, 2]
+
+    T <- sum(data$signrank)
+
+    ind <- replicate(B, sample(c(1, -1), m, TRUE))
+
+    T.ecdf <- ecdf(colSums(ind * srksum))
+
+    pval <- switch(alternative,
+                   less = T.ecdf(T),
+                   greater = 1 - T.ecdf(T),
+                   two.sided = 2 * min(T.ecdf(T), 1 - T.ecdf(T)))
+
+    names(T) <- "T"
+    names(n) <- "total number of observations"
+    names(m) <- "total number of clusters"
+    names(mu) <- "shift in location"
+    result <- list(statistic = T,
+                   p.value = pval, nobs = n, nclus = m, null.value = mu,
+                   alternative = alternative,
+                   data.name = DNAME, method = METHOD)
+    class(result) <- "ctest"
+    return(result)
+}
+
+
+
+
+
+clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
+                                           mu, exact, B, DNAME, METHOD) {
+### Ties are dropped
+    if (exact == TRUE && B >= 1)
+        return(clusWilcox.test.signedrank.rgl.exact(x, cluster, alternative,
+                                                   mu, B, DNAME, METHOD))
+    x <- x - mu
+    data <- data.frame(x, cluster)
+    data <- data[x != 0, ]
+    cluster.size <- table(data$cluster)
+    m <- length(cluster.size)
+    n <- nrow(data)
+    if (length(table(cluster.size)) != 1) {
+        balance <- FALSE
+    } else {
+        balance <- TRUE
     }
+
+    xrank <- rank(abs(data$x))
+    data <- cbind(data, xrank)
+    signrank <- ifelse(data$x > 0, 1, -1) * data$xrank
+    data <- cbind(data, signrank)
+    colnames(data)[4] <- "signrank"
 
     if (exact == TRUE) {
         METHOD <- paste0(METHOD, " (exact)")
         if (length(table(cluster)) > 40)
-            print("Number of clusters exceeds 40 for RGL clustered signed-rank test")
-        if (balance == TRUE ) {            
-            T <- sum(data$signrank)
-            srksum <-  stats::aggregate(signrank ~ cluster, FUN = sum)[, 2]
-            T.pos <- sum(srksum[srksum > 0])
-            p.val.l <- psrkg(T.pos, sort(abs(srksum)))
-            pval <- switch(alternative,
-                           less = p.val.l,
-                           greater = 1 - p.val.l,
-                           two.sided = 2 * min(p.val.l, 1 - p.val.l))
-        } else {
-            sumclusterrank <- c(by(data$signrank, data$cluster, sum))
-            sumsq <- sum(sumclusterrank ^ 2)
-            meansumrank <- sumclusterrank / cluster.size
-            sumsqi <- sum(cluster.size ^ 2)
-            
-            ## calculate intraclass correlation between signed ranks within the same cluster
-            data$cluster.f <- as.factor(data$cluster)
-            mod <- lm(signrank ~ cluster.f, data, y = TRUE)
-            errordf <- mod$df.residual
-            errorss <- sum(mod$residuals ^ 2)
-            modeldf <- n - errordf - 1
-            modelss <- sum((mod$y - mean(mod$y)) ^ 2) - errorss
-            sumi <- n
-            
-            m0 <- (sumi - (sumsqi / sumi)) / (m - 1)
-            totalss <- errorss + modelss
-            totaldf <- errordf + modeldf
-            wthms <- errorss / errordf
-            betms <- modelss / modeldf
-            vars <- totalss / totaldf
-            s2b <- (betms - wthms) / m0
-            s2w <- wthms
-            rosglm <- s2b / (s2b + s2w)
-            if (rosglm < 0) {
-                rosglm = 0
-            }
-            ros <- rosglm
-            roscor <- ros * (1 + (1 - ros ^ 2) / (m - 2.5))
-            if (roscor > 1) {
-                roscor = 1
-            }
-            wi <- cluster.size / (vars * (1 + (cluster.size - 1) * roscor))
-            
-            T <- sum(meansumrank * wi)
-            msr.pos <- msr.w <-  meansumrank * wi
-            msr.pos <- msr.pos[msr.pos > 0]
-            T.pos <- sum(msr.pos)
+            print("Number of clusters exceeds 40 for RGL clustered signed-rank test, the exact signed rank test may not work due to overflow.")
+        T <- sum(data$signrank)
+        srksum <-  stats::aggregate(signrank ~ cluster, FUN = sum)[, 2]
+        T.pos <- sum(srksum[srksum > 0])
+        p.val.l <- psrkg(T.pos, sort(abs(srksum)))
+        pval <- switch(alternative,
+                       less = p.val.l,
+                       greater = 1 - p.val.l,
+                       two.sided = 2 * min(p.val.l, 1 - p.val.l))
 
-            msr.dif <- min(lag(sort(abs(msr.w))))
-            msr.pos.int <- as.integer(sort(abs(msr.w) / msr.dif))
-            T.pos.int <- as.integer(T.pos / msr.dif)
-            p.val.l <- psrkg(T.pos.int, msr.pos.int)
-            pval <- switch(alternative,
-                           less = p.val.l,
-                           greater = 1 - p.val.l,
-                           two.sided = 2 * min(p.val.l, 1 - p.val.l))
-        }
         names(T) <- "T"
         names(n) <- "total number of observations"
         names(m) <- "total number of clusters"
         names(mu) <- "shift in location"
         result <- list(statistic = T,
-                       p.value = pval, n = n, cn = m, null.value = mu,
+                       p.value = pval, nobs = n, nclus = m, null.value = mu,
                        alternative = alternative,
                        data.name = DNAME, method = METHOD)
-        class(result) <- "htest"
+        class(result) <- "ctest"
         return(result)
-        
+
     } else {
         if (balance == TRUE){
             T <- sum(data$signrank)
             sumrank <- c(by(data$signrank, data$cluster, sum))
             sumsq <- sum(sumrank ^ 2)
             VarT <- sumsq
-            Zc <- T / sqrt(VarT)
-            pval <- 2 * (1 - pnorm(abs(Zc)))       
+            Z <- T / sqrt(VarT)
+            pval <- 2 * (1 - pnorm(abs(Z)))
             ADJUST <- FALSE
             names(T) <- "T"
-            names(Zc) <- "Zc"
-            names(VarT) <- "variance of T"       
+            names(Z) <- "Z"
+            names(VarT) <- "variance of T"
             names(n) <- "total number of observations"
             names(m) <- "total number of clusters"
             names(VarT) <- paste("variance of ", names(T))
             names(mu) <- "shift in location"
-            result <- list(Rstat = T, VRstat = VarT, statistic = Zc,
-                           p.value = pval, n = n, cn = m, null.value = mu,
+            result <- list(Rstat = T, VRstat = VarT, statistic = Z,
+                           p.value = pval, nobs = n, nclus = m, null.value = mu,
                            alternative = alternative,
                            data.name = DNAME, method = METHOD,
                            adjusted = ADJUST)
-            class(result) <- "htest"
+            class(result) <- "ctest"
             return(result)
-        } else {       
+        } else {
             sumclusterrank <- c(by(data$signrank, data$cluster, sum))
             sumsq <- sum(sumclusterrank ^ 2)
             meansumrank <- sumclusterrank / cluster.size
@@ -172,36 +175,114 @@ clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
             T <- sum(meansumrank * wi)
             sqweightsum <- sum(wi ^ 2 * meansumrank ^ 2)
             VarT <- sqweightsum
-            Zc <-  T / (sqrt(VarT))
+            Z <-  T / (sqrt(VarT))
             pval <- switch(alternative,
-                           less = pnorm(abs(Zc)),
-                           greater = pnorm(abs(Zc), lower.tail = FALSE),
-                           two.sided = 2 * min(pnorm(abs(Zc)),
-                                               pnorm(abs(Zc), lower.tail = FALSE)))
-            
+                           less = pnorm(abs(Z)),
+                           greater = pnorm(abs(Z), lower.tail = FALSE),
+                           two.sided = 2 * min(pnorm(abs(Z)),
+                                               pnorm(abs(Z), lower.tail = FALSE)))
+
             names(T) <- "T"
-            names(Zc) <- "Zc"
-            
+            names(Z) <- "Z"
+
             ADJUST <- TRUE
             names(mu) <- "shift in location"
             names(n) <- "total number of observations"
             names(m) <- "total number of clusters"
             names(VarT) <- paste("variance of ", names(T))
-            result <- list(Rstat = T, VRstat = VarT, statistic = Zc,
-                           p.value = pval, n = n, cn = m,
+            result <- list(Rstat = T, VRstat = VarT, statistic = Z,
+                           p.value = pval, nobs = n, nclus = m,
                            alternative = alternative,
                            null.value = mu,
                            data.name = DNAME, method = METHOD,
                            adjusted = ADJUST)
-            class(result) <- "htest"
+            class(result) <- "ctest"
             return(result)
-            
+
         }
     }
 }
 
-clusWilcox.test.signedrank.ds <- function(x, cluster, alternative,
+clusWilcox.test.signedrank.ds.exact.1 <- function(x, cluster) {
+    order.c <- order(cluster)
+    x <- x[order.c]
+    cluster <- cluster[order.c]
+    csize <- as.vector(table(cluster))
+    m <- length(csize)
+    cid <- as.numeric(names(csize))
+    n <- sum(csize)
+    plus <- as.numeric(x > 0)
+    minus <- as.numeric(x < 0)
+    niplus <- aggregate(plus ~ cluster, FUN = sum)[, 2]
+    niminus <- aggregate(minus ~ cluster, FUN = sum)[, 2]
+    ni <- table(cluster)
+
+
+    csize.cum <- cumsum(csize)
+    csize.cum <- c(0, csize.cum)
+    cluster <- recoderFunc(cluster, unique(cluster), c(1 : m))
+
+
+    Ftot.vec  <- Ftot_vec(abs(x), cluster, csize, n, m)
+    Fi.vec <- Fi_vec(abs(x), cluster, csize, n, m)
+    Fcom.vec <- Fcom_vec(abs(x), cluster, csize, n, m)
+
+    T <- sum((niplus - niminus) / ni) +
+        sum((sign(x) * (Ftot.vec - Fi.vec)) / rep.int(ni, times = ni))
+    T
+
+}
+
+
+clusWilcox.test.signedrank.ds.exact <- function(x, cluster, alternative,
+                                               B,
+                                               mu, DNAME, METHOD) {
+    METHOD <- paste0(METHOD, " (random exactutation)")
+    T.vec <- rep(NA, B)
+    x <- x - mu
+    n.obs <- length(x)
+    n.clus <- length(unique(cluster))
+    for ( i in 1 : B) {
+        sgn.samp <- sample(c(-1, 1), n.obs, TRUE)
+        x.samp <- abs(x) * sgn.samp
+        T.vec[i] <- clusWilcox.test.signedrank.ds.exact.1(x.samp, cluster)
+    }
+    T <- clusWilcox.test.signedrank.ds.exact.1(x, cluster)
+    t.ecdf <- ecdf(T.vec)
+
+    pval <- switch(alternative, less = t.ecdf(T),
+                   greater = 1 - t.ecdf(T),
+                   two.sided = 2 * min(t.ecdf(T), 1 - t.ecdf(T)))
+
+    names(n.obs) <- "total number of observations"
+    names(n.clus) <- "total number of clusters"
+    names(T) <- "T"
+    names(mu) <- "shift in location"
+    result <- list(statistic = T,
+                   p.value = pval, nobs = n.obs, nclus = n.clus,
+                   alternative = alternative,
+                   null.value = mu,
+                   data.name = DNAME, method = METHOD)
+    class(result) <- "ctest"
+    return(result)
+
+
+}
+
+
+clusWilcox.test.signedrank.ds <- function(x, cluster, alternative, exact, B,
                                           mu, DNAME, METHOD) {
+
+
+    if (exact == TRUE & B >= 1){
+        return(clusWilcox.test.signedrank.ds.exact(x, cluster, alternative,
+                                                  B, mu, DNAME, METHOD))
+    }
+
+    if (exact == TRUE & B == 0) {
+        warning("Exact test is not provided for DS method for signed rank test, large-sample test will be carried out")
+    }
+
     x <- x - mu
     order.c <- order(cluster)
     x <- x[order.c]
@@ -215,17 +296,17 @@ clusWilcox.test.signedrank.ds <- function(x, cluster, alternative,
     niplus <- aggregate(plus ~ cluster, FUN = sum)[, 2]
     niminus <- aggregate(minus ~ cluster, FUN = sum)[, 2]
     ni <- table(cluster)
-    
-    
+
+
     csize.cum <- cumsum(csize)
     csize.cum <- c(0, csize.cum)
     cluster <- recoderFunc(cluster, unique(cluster), c(1 : m))
-    
-    
+
+
     Ftot.vec  <- Ftot_vec(abs(x), cluster, csize, n, m)
     Fi.vec <- Fi_vec(abs(x), cluster, csize, n, m)
     Fcom.vec <- Fcom_vec(abs(x), cluster, csize, n, m)
-    
+
     T <- sum((niplus - niminus) / ni) +
         sum((sign(x) * (Ftot.vec - Fi.vec)) / rep.int(ni, times = ni))
     temp <- sign(x) * Fcom.vec
@@ -237,7 +318,7 @@ clusWilcox.test.signedrank.ds <- function(x, cluster, alternative,
                    greater = pnorm(abs(Z), lower.tail = FALSE),
                    two.sided = 2 * min(pnorm(abs(Z)),
                                        pnorm(abs(Z), lower.tail = FALSE)))
-    
+
     names(n) <- "total number of observations"
     names(m) <- "total number of clusters"
     names(Z) <- "Z"
@@ -245,10 +326,10 @@ clusWilcox.test.signedrank.ds <- function(x, cluster, alternative,
     result <- list(statistic = Z,
                    srstat = T,
                    vsrstat = VTS,
-                   p.value = pval, n = n, cn = m,
+                   p.value = pval, nobs = n, nclus = m,
                    alternative = alternative,
                    null.value = mu,
                    data.name = DNAME, method = METHOD)
-    class(result) <- "htest"
+    class(result) <- "ctest"
     return(result)
 }

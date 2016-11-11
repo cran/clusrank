@@ -2,6 +2,7 @@
 
 S3method(clusWilcox.test,default)
 S3method(clusWilcox.test,formula)
+S3method(print,ctest)
 export(clusWilcox.test)
 export(cluster)
 export(stratum)
