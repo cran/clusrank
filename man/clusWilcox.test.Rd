@@ -16,7 +16,7 @@ clusWilcox.test(x, ...)
 \method{clusWilcox.test}{default}(x, y = NULL, cluster = NULL,
   group = NULL, stratum = NULL, data = NULL,
   alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE,
-  exact = FALSE, B = 1, method = c("rgl", "ds"), ...)
+  exact = FALSE, B = 2000, method = c("rgl", "ds"), ...)
 }
 \arguments{
 \item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
@@ -60,10 +60,10 @@ treatment is assigned at cluster level, random permutation
 test is available for all tests. For more details look at the
 description of the argument \code{B}.}
 
-\item{B}{An integer. If is set as 0, then exact permutation test is
-carried out. If is set as a positive integer, then random permutation
-is carried out, and B is the number of replicates drawn for
-the permutation test. Default is set as 2000 to ran a random permutation test.}
+\item{B}{An integer specifying the number of permutations if exact = TRUE.
+If B = 0, then the test is the exact permutation test.
+If B > 0, then an approximation to the exact test with B random permutation.
+Default is set as 2000 to ran a random permutation test.}
 
 \item{method}{A character string specifying the method of
 clustered Wilcoxon rank test to be use, should be one of
@@ -81,8 +81,8 @@ available for \code{rgl} rank sum test when treatment is assigned at
     cluster level.}
 }
 \value{
-A list with class \code{"htest"} containing the following components, for different test the components may vary:
-
+A list with class \code{"htest"} containing the following components,
+for different test the components may vary:
 \item{Rstat}{the value of the rank statistic with a name describing it.}
 \item{ERstat}{the expectation of the rank statistic.}
 \item{VRstat}{the variance of the rank statistic.}

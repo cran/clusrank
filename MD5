@@ -1,15 +1,15 @@
-dc843ee401c469347eaf9fc9b07e4d95 *DESCRIPTION
+d5066dbb1175e9d959d57ccb7584988b *DESCRIPTION
 0431a0f62bcaaf4113837dcb72c94213 *NAMESPACE
-37efc890952d8ca855a8bd4454e96364 *R/RcppExports.R
+53246c69771290ae7ce1510b6aa5f2cc *R/RcppExports.R
 db3f826b918cd43b040a84a78f3110fa *R/amd.R
-42525f499eeaea3c081d73ebfffe19d2 *R/clusWilcox.R
+d6d7e0827762f746fa96fbea46f59e3b *R/clusWilcox.R
 741372c9d805f50358f5cfb9bbd1442e *R/clusranksum.R
 d640adda93af46c97193a952690c2901 *R/clussignrank.R
 e38548ab2f87990f649d6cc6951f662d *R/crd.R
 8403f5943c4074817520fafa3b5ec6dc *R/crdstr.R
 0e42595d8aac435617ccf4890c7d201a *R/crsd.R
 d3a902a587990786917c76590587df48 *R/crsdunb.R
-72d25d94b24fd9121d68cb5a0689bd30 *R/print.R
+cc9d662857324df9eae547a830065117 *R/print.R
 de4c59ddd8e55181c922146da6fff342 *R/recodeFun.R
 434e5ca70127b417dce7d51203c6deb2 *R/special.R
 6b1b7411ef1545d24a668eed81042cba *data/amd.RData
@@ -18,7 +18,7 @@ de4c59ddd8e55181c922146da6fff342 *R/recodeFun.R
 1114c547eb0b62d4ab206e36a1d105fa *data/crsd.rda
 493fb782bfacc1dcb46acdeb691cbce8 *data/crsdUnb.rda
 f5d51090d12a3747673d3f57d33dd73e *man/amd.Rd
-47e5c3c18721dea28ecd026334572f7f *man/clusWilcox.test.Rd
+18a343332b950f136534bf755b976b74 *man/clusWilcox.test.Rd
 65612e4c0d2862fe5b33da2a32057243 *man/cluster.Rd
 d3c6a0ad0d20d19d451b031943c41a54 *man/crd.Rd
 3e955ab1d1bc045ce75874c6ae470144 *man/crdStr.Rd
@@ -26,5 +26,5 @@ d3c6a0ad0d20d19d451b031943c41a54 *man/crd.Rd
 da60ca6c309ff59823c8dd9c8bb9185d *man/crsdUnb.Rd
 6657390bb3b0d3186c161b53cda23b62 *man/stratum.Rd
 2cc456f87ca78c9bfbe59da9ec753f0e *src/Fprop.cpp
-2698c100af4a094b1de9381f0a47e176 *src/RcppExports.cpp
+c63229f1cc7e9569e95205bf6dc6a7ec *src/RcppExports.cpp
 ed121d39a1ecd0e258bc281f58151411 *src/exact.cpp
