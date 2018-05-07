@@ -2,8 +2,8 @@
 % Please edit documentation in R/clusWilcox.R
 \name{clusWilcox.test}
 \alias{clusWilcox.test}
-\alias{clusWilcox.test.default}
 \alias{clusWilcox.test.formula}
+\alias{clusWilcox.test.default}
 \title{Wilcoxon Rank Sum and Signed Rank Test for Clustered Data}
 \usage{
 clusWilcox.test(x, ...)
@@ -143,6 +143,7 @@ The exact test is only available for RGL signed rank test and  RGL
 
 \item \code{default}: Default \code{S3} method.
 }}
+
 \section{Warning}{
 
 This function can use large amounts of memory and stack if 'exact =
@@ -150,22 +151,20 @@ This function can use large amounts of memory and stack if 'exact =
     limit is exceeded). Not recommended for data set
     with number of clusters more than 50.
 }
+
 \examples{
 ## Clustered signed rank test using RGL method.
 data(crsd)
-clusWilcox.test(z, cluster = id, data = crsd, paired = TRUE)
+clusWilcox.test(z, cluster = id, data = crsd, paired = TRUE, method = "rgl")
 ## or
-clusWilcox.test(z ~ cluster(id), data = crsd, paired = TRUE)
+clusWilcox.test(z ~ cluster(id), data = crsd, paired = TRUE, method = "rgl")
 \dontrun{clusWilcox.test(z, cluster = id, data = crsd)
 ## Default is rank sum test. The group variable is required.}
 ## Clustered rank sum test using RGL method.
 data(crd)
-clusWilcox.test(z ~ group + cluster(id), data = crd)
+clusWilcox.test(z ~ group + cluster(id), data = crd, method = "rgl")
 ## or
-clusWilcox.test(z, cluster = id, group = group, data = crd)
-}
-\author{
-Yujing Jiang
+clusWilcox.test(z, cluster = id, group = group, data = crd, method = "rgl")
 }
 \references{
 Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
@@ -186,4 +185,6 @@ Journal of the American Statistical Association, \bold{100}, 908-915.
 Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank test for Clustered Data}.
 Biometric, \bold{64}, 501-507.
 }
-
+\author{
+Yujing Jiang
+}

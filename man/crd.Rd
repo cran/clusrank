@@ -21,4 +21,3 @@ Non-stratified data including 3 variables:
 }
 \keyword{datasets}
 \keyword{internal}
-

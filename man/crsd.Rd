@@ -22,4 +22,3 @@ Simulated clustered data with the difference of pre and post treatment scores re
 }
 \keyword{datasets}
 \keyword{internal}
-

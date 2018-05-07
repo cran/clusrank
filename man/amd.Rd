@@ -41,11 +41,11 @@ the two advanced stages (4 and 5):
 \examples{
 data(amd)
 clusWilcox.test(CARMS ~ Variant + cluster(ID), data = amd,
-               subset = CARMS \%in\% c(1, 2, 3, 4), method = "rgl")
+               subset = CARMS \%in\% c(1, 2, 3, 4), method = "rgl", alternative = "two")
 clusWilcox.test(CARMS ~ Variant + cluster(ID), data = amd,
-               subset = CARMS \%in\% c(1, 2, 3, 4), method = "ds")
+               subset = CARMS \%in\% c(1, 2, 3, 4), method = "ds", alternative = "two")
 clusWilcox.test(CARMS ~ Variant + cluster(ID) + stratum(Agesex), data = amd,
-               subset = CARMS \%in\% c(1, 2, 3, 4))
+               subset = CARMS \%in\% c(1, 2, 3, 4), alternative = "two")
 }
 \references{
 Seddon JM, Sharma S, Adelman RA (2006)
@@ -61,5 +61,3 @@ JAMA Ophthalmol, 2015 Apr 16.
 \url{http://archopht.jamanetwork.com/article.aspx?articleid=2213742}.
 }
 \keyword{datasets}
-\keyword{internal}
-

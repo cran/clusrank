@@ -21,4 +21,3 @@ Stratified data with clustering structure, Have some missing values.
 }
 \keyword{datasets}
 \keyword{internal}
-

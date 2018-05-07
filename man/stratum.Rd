@@ -24,4 +24,3 @@ will assume no stratification in the data.
 clusWilcox.test.formula
 }
 \keyword{internal}
-

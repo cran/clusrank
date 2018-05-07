@@ -27,4 +27,3 @@ will assume no cluster in the data.
 \code{\link{clusWilcox.test.formula}}
 }
 \keyword{internal}
-

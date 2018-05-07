@@ -2,46 +2,46 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cumcrksum <- function(rks, I, Score, Csize) {
-    .Call('clusrank_cumcrksum', PACKAGE = 'clusrank', rks, I, Score, Csize)
+    .Call(`_clusrank_cumcrksum`, rks, I, Score, Csize)
 }
 
 crksum_str <- function(k, x, xc, max) {
-    .Call('clusrank_crksum_str', PACKAGE = 'clusrank', k, x, xc, max)
+    .Call(`_clusrank_crksum_str`, k, x, xc, max)
 }
 
 pcrksum_str <- function(k, x, xc, xn, n, max) {
-    .Call('clusrank_pcrksum_str', PACKAGE = 'clusrank', k, x, xc, xn, n, max)
+    .Call(`_clusrank_pcrksum_str`, k, x, xc, xn, n, max)
 }
 
 psrkg <- function(srk, Score) {
-    .Call('clusrank_psrkg', PACKAGE = 'clusrank', srk, Score)
+    .Call(`_clusrank_psrkg`, srk, Score)
 }
 
 Fprop <- function(x, clus, nvec, m, n) {
-    .Call('clusrank_Fprop', PACKAGE = 'clusrank', x, clus, nvec, m, n)
+    .Call(`_clusrank_Fprop`, x, clus, nvec, m, n)
 }
 
 Fi <- function(X, I, x, clus, nvec, N) {
-    .Call('clusrank_Fi', PACKAGE = 'clusrank', X, I, x, clus, nvec, N)
+    .Call(`_clusrank_Fi`, X, I, x, clus, nvec, N)
 }
 
 Ftot <- function(X, x, clus, nvec, N, M) {
-    .Call('clusrank_Ftot', PACKAGE = 'clusrank', X, x, clus, nvec, N, M)
+    .Call(`_clusrank_Ftot`, X, x, clus, nvec, N, M)
 }
 
 Ftot_vec <- function(x, clus, nvec, N, M) {
-    .Call('clusrank_Ftot_vec', PACKAGE = 'clusrank', x, clus, nvec, N, M)
+    .Call(`_clusrank_Ftot_vec`, x, clus, nvec, N, M)
 }
 
 Fi_vec <- function(x, clus, nvec, N, M) {
-    .Call('clusrank_Fi_vec', PACKAGE = 'clusrank', x, clus, nvec, N, M)
+    .Call(`_clusrank_Fi_vec`, x, clus, nvec, N, M)
 }
 
 Fcom <- function(X, x, clus, nvec, N, M) {
-    .Call('clusrank_Fcom', PACKAGE = 'clusrank', X, x, clus, nvec, N, M)
+    .Call(`_clusrank_Fcom`, X, x, clus, nvec, N, M)
 }
 
 Fcom_vec <- function(x, clus, nvec, N, M) {
-    .Call('clusrank_Fcom_vec', PACKAGE = 'clusrank', x, clus, nvec, N, M)
+    .Call(`_clusrank_Fcom_vec`, x, clus, nvec, N, M)
 }
 

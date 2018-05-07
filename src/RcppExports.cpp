@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // cumcrksum
 IntegerMatrix cumcrksum(int rks, int I, IntegerVector Score, int Csize);
-RcppExport SEXP clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP, SEXP CsizeSEXP) {
+RcppExport SEXP _clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP, SEXP CsizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,7 @@ END_RCPP
 }
 // crksum_str
 int crksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector max);
-RcppExport SEXP clusrank_crksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP maxSEXP) {
+RcppExport SEXP _clusrank_crksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,7 +35,7 @@ END_RCPP
 }
 // pcrksum_str
 double pcrksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector xn, IntegerVector n, IntegerVector max);
-RcppExport SEXP clusrank_pcrksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP xnSEXP, SEXP nSEXP, SEXP maxSEXP) {
+RcppExport SEXP _clusrank_pcrksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP xnSEXP, SEXP nSEXP, SEXP maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,7 +51,7 @@ END_RCPP
 }
 // psrkg
 double psrkg(int srk, IntegerVector Score);
-RcppExport SEXP clusrank_psrkg(SEXP srkSEXP, SEXP ScoreSEXP) {
+RcppExport SEXP _clusrank_psrkg(SEXP srkSEXP, SEXP ScoreSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -63,7 +63,7 @@ END_RCPP
 }
 // Fprop
 NumericVector Fprop(NumericVector x, NumericVector clus, IntegerVector nvec, int m, int n);
-RcppExport SEXP clusrank_Fprop(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP mSEXP, SEXP nSEXP) {
+RcppExport SEXP _clusrank_Fprop(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP mSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -78,7 +78,7 @@ END_RCPP
 }
 // Fi
 double Fi(double X, int I, NumericVector x, IntegerVector clus, IntegerVector nvec, int N);
-RcppExport SEXP clusrank_Fi(SEXP XSEXP, SEXP ISEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP) {
+RcppExport SEXP _clusrank_Fi(SEXP XSEXP, SEXP ISEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -94,7 +94,7 @@ END_RCPP
 }
 // Ftot
 double Ftot(double X, NumericVector x, IntegerVector clus, IntegerVector nvec, int N, int M);
-RcppExport SEXP clusrank_Ftot(SEXP XSEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
+RcppExport SEXP _clusrank_Ftot(SEXP XSEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,7 +110,7 @@ END_RCPP
 }
 // Ftot_vec
 NumericVector Ftot_vec(NumericVector x, IntegerVector clus, IntegerVector nvec, int N, int M);
-RcppExport SEXP clusrank_Ftot_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
+RcppExport SEXP _clusrank_Ftot_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,7 +125,7 @@ END_RCPP
 }
 // Fi_vec
 NumericVector Fi_vec(NumericVector x, IntegerVector clus, IntegerVector nvec, int N, int M);
-RcppExport SEXP clusrank_Fi_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
+RcppExport SEXP _clusrank_Fi_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -140,7 +140,7 @@ END_RCPP
 }
 // Fcom
 double Fcom(double X, NumericVector x, IntegerVector clus, IntegerVector nvec, int N, int M);
-RcppExport SEXP clusrank_Fcom(SEXP XSEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
+RcppExport SEXP _clusrank_Fcom(SEXP XSEXP, SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -156,7 +156,7 @@ END_RCPP
 }
 // Fcom_vec
 NumericVector Fcom_vec(NumericVector x, IntegerVector clus, IntegerVector nvec, int N, int M);
-RcppExport SEXP clusrank_Fcom_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
+RcppExport SEXP _clusrank_Fcom_vec(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -168,4 +168,24 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(Fcom_vec(x, clus, nvec, N, M));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_clusrank_cumcrksum", (DL_FUNC) &_clusrank_cumcrksum, 4},
+    {"_clusrank_crksum_str", (DL_FUNC) &_clusrank_crksum_str, 4},
+    {"_clusrank_pcrksum_str", (DL_FUNC) &_clusrank_pcrksum_str, 6},
+    {"_clusrank_psrkg", (DL_FUNC) &_clusrank_psrkg, 2},
+    {"_clusrank_Fprop", (DL_FUNC) &_clusrank_Fprop, 5},
+    {"_clusrank_Fi", (DL_FUNC) &_clusrank_Fi, 6},
+    {"_clusrank_Ftot", (DL_FUNC) &_clusrank_Ftot, 6},
+    {"_clusrank_Ftot_vec", (DL_FUNC) &_clusrank_Ftot_vec, 5},
+    {"_clusrank_Fi_vec", (DL_FUNC) &_clusrank_Fi_vec, 5},
+    {"_clusrank_Fcom", (DL_FUNC) &_clusrank_Fcom, 6},
+    {"_clusrank_Fcom_vec", (DL_FUNC) &_clusrank_Fcom_vec, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_clusrank(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }
