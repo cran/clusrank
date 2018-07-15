@@ -1,8 +1,12 @@
 #' Rank tests for clustered data.
 #'
 #' clusrank provides Wilcoxon rank-sum test and Wilcoxon sign-rank test for
-#' clustered data. Each test has two methods: RGL and DS. The two tests were
-#' unified with one single interface: \code{\link{clusWilcox.test}}.
+#' clustered data. For clustered rank-sum test, there are 3 methods: RGL, DS
+#' and DD. For clustered signed-rank test, there are 2 methods: RGL and
+#' DS. The two tests are unified with one single interface:
+#' \code{\link{clusWilcox.test}}. For details of the tests please look at
+#' the references below.
+#'
 #' @references
 #' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
 #' \emph{The Wilcoxon Signed Rank Test for Paired Comparisons of
@@ -21,4 +25,9 @@
 #'
 #' Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank test for Clustered Data}.
 #' Biometric, \bold{64}, 501-507.
+#'
+#' Sandipan Dutta, Somnath Datta (2015) \emph{A Rank-Sum Test for Clustered
+#'     Data When the Number of Subjects in a Group within a Cluster is
+#'     Informative}.
+#' Biometrics, \bold{72}, 432-440.
 "_PACKAGE"

@@ -1,11 +1,11 @@
-6a5763af69dfca4f1f55bf015fa4e773 *DESCRIPTION
+04ba88091d79db4af56d430bfca2a015 *DESCRIPTION
 4deda93bf4e71c5275c9bd97bcfe537c *NAMESPACE
 04e5008e360738985a0bae50605adb45 *R/RcppExports.R
 7dd0fa1a96467c811aa5cc4d64dbe462 *R/amd.R
-1e3080bac544209cb397e0f2dd7889af *R/clusWilcox.R
-7d0641bd321a32f9a01839bec8ba41f9 *R/clusrank.R
-6f9be7ec87280659c116b9abb246f9ee *R/clusranksum.R
-64e9db19f159cacee11e4ac6d437a251 *R/clussignrank.R
+14498918d617cc71924905a039a33aef *R/clusWilcox.R
+b718cfd7a036a8b09d6ab2e7a6a44095 *R/clusrank.R
+b5a9f839b7e3c8b4c6d713324915dc43 *R/clusranksum.R
+303f9e79abfe3a9ddd337f3cfe2197a5 *R/clussignrank.R
 261c9dd11f46144171f06c17613ae5e1 *R/crd.R
 239535cbe5b1eddc4f71211f766f982c *R/crdstr.R
 2e3344d6f4f6ba46224e0b7f8a6362dd *R/crsd.R
@@ -19,8 +19,8 @@ bec2b0cab786dbeac5f8e71a359145c2 *R/special.R
 1114c547eb0b62d4ab206e36a1d105fa *data/crsd.rda
 493fb782bfacc1dcb46acdeb691cbce8 *data/crsdUnb.rda
 013e8692cc773f4c94544341be140de8 *man/amd.Rd
-a662ca073b056a81fc280b94b2a41cf9 *man/clusWilcox.test.Rd
-538874f4a60ff4cc9a6ccd57f6fbe77a *man/clusrank-package.Rd
+5f42d167a7d47e2455489a3de78769ec *man/clusWilcox.test.Rd
+50a86340abbc324dca24c8d68de05c2d *man/clusrank-package.Rd
 a58132e5c2a31cd681392a6a298a9642 *man/cluster.Rd
 07f1b02292eecb48429d50e9dcdebd52 *man/crd.Rd
 c2e4a6c57443e276aedfddcc0bd327bc *man/crdStr.Rd

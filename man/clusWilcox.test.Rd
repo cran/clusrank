@@ -11,12 +11,12 @@ clusWilcox.test(x, ...)
 \method{clusWilcox.test}{formula}(formula, data = parent.frame(),
   subset = NULL, na.action = na.omit, alternative = c("two.sided", "less",
   "greater"), mu = 0, paired = FALSE, exact = FALSE, B = 2000,
-  method = c("rgl", "ds"), ...)
+  method = c("rgl", "ds", "dd"), ...)
 
 \method{clusWilcox.test}{default}(x, y = NULL, cluster = NULL,
   group = NULL, stratum = NULL, data = NULL,
   alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE,
-  exact = FALSE, B = 2000, method = c("rgl", "ds"), ...)
+  exact = FALSE, B = 2000, method = c("rgl", "ds", "dd"), ...)
 }
 \arguments{
 \item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
@@ -67,7 +67,8 @@ Default is set as 2000 to ran a random permutation test.}
 
 \item{method}{A character string specifying the method of
 clustered Wilcoxon rank test to be use, should be one of
-\code{"rgl"} or \code{"ds"}.}
+\code{"rgl"} or \code{"ds"}. For rank-sum test, the \code{"dd"}
+method is also available.}
 
 \item{y}{An optional numeric vector of data values, non-finite
 values will be omitted.}
@@ -182,8 +183,13 @@ Two-Group Comparisons with Group}. Biometrics, \bold{62}, 1251-1259.
 Somnath Datta, Glen A. Satten (2005) \emph{Rank-Sum Tests for Clustered Data}.
 Journal of the American Statistical Association, \bold{100}, 908-915.
 
-Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank test for Clustered Data}.
-Biometric, \bold{64}, 501-507.
+Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank Test for Clustered Data}.
+Biometrics, \bold{64}, 501-507.
+
+Sandipan Dutta, Somnath Datta (2015) \emph{A Rank-Sum Test for Clustered
+    Data When the Number of Subjects in a Group within a Cluster is
+    Informative}.
+Biometrics, \bold{72}, 432-440.
 }
 \author{
 Yujing Jiang

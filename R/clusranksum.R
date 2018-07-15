@@ -36,6 +36,12 @@ clusWilcox.test.ranksum.rgl <- function(x, cluster, group, stratum,
 ### to see if they only are only assigned a single treatment.
     if (all(unlist(check) == 1))
         warning("The two groups should contain clusters with the same size for at leaset one cluster size")
+    n.obs <- length(x)
+    one <- rep(1, n.obs)
+    csize <- stats::aggregate(one ~ cluster, FUN = sum)[, 2]
+    if (length(table(csize)) == length(unique(cluster))) {
+        stop("For RGL method for rank-sum test, there should be at least a cluster size level that contains at least two clusters")
+    }
 
     arglist <- setNames(list(x, cluster, group, stratum, alternative,
                              mu, DNAME, METHOD, exact, B),
@@ -226,9 +232,9 @@ clusWilcox.test.ranksum.rgl.clus <- function(x, cluster, group,
     dat.l <- lapply(dat.l, csize.split)
 
     if (exact == TRUE & B == 0) {
-        METHOD <- paste0(METHOD, " (exact exactutation)")
-        if(length(table(cluster)) > 40)
-            print("Number of clusters exceeds 40 for RGL clustered rank exact test")
+        METHOD <- paste0(METHOD, " (exact permutation)")
+        if(length(table(cluster)) > 20)
+            warning("Number of clusters exceeds 20 for RGL clustered rank exact test")
         W <- sum(dat[dat$grp == 1, "rksum"])
         n.layer <- l.csu * l.stu
         mgv <- ngv <- rep(0, n.layer)
@@ -485,7 +491,7 @@ clusWilcox.test.ranksum.rgl.sub.exact.1 <- function(x, cluster, group,
 clusWilcox.test.ranksum.rgl.sub.exact <- function(x, cluster, group,
                                                  alternative, exact, B, mu, DNAME = NULL,
                                                  METHOD = NULL, stratum) {
-    METHOD <- paste0(METHOD, " (random permutation)")
+    METHOD <- paste0(METHOD, " (Random Permutation)")
     bal <- (length(table(table(cluster))) == 1) # check balance of
                                         # data.
     x[which(group == 1)] <- x[which(group == 1)] - mu
@@ -590,7 +596,7 @@ clusWilcox.test.ranksum.rgl.sub <- function(x, cluster, group, alternative,
                                                     alternative, exact, B,
                                                     mu, DNAME, METHOD, stratum))
     if (exact == TRUE & B == 0)
-        warning("Exact exactutation test is not available for RGL clustered rank-sum test when treatment is assigned at subunit level, will perform asymptotic test")
+        stop("Exact exactutation test is not available for RGL clustered rank-sum test when treatment is assigned at subunit level.")
     bal <- (length(table(table(cluster))) == 1) # check balance of data.
     clus <- unique(cluster)
     if (is.numeric(clus)) clus <- sort(clus)
@@ -901,7 +907,7 @@ clusWilcox.test.ranksum.ds.exact <- function(x, cluster, group,
     pval <- switch(alternative, less = w.ecdf(W),
                    greater = 1 - w.ecdf(W),
                    two.sided = 2 * min(w.ecdf(W), 1 - w.ecdf(W)))
-    METHOD <- paste0(METHOD, " (random permutation)")
+    METHOD <- paste0(METHOD, " (Random Permutation)")
     names(mu) <- "difference in locations"
 
     if (length(unique(group)) > 2) {
@@ -1010,7 +1016,7 @@ clusWilcox.test.ranksum.ds <- function(x, cluster, group,
                        nobs = n.obs, nclus = n.clus)
 
         class(result) <- "ctest"
-        result
+        return(result)
 
 
     } else {
@@ -1074,4 +1080,98 @@ clusWilcox.test.ranksum.ds <- function(x, cluster, group,
         class(result) <- "ctest"
         result
     }
+}
+
+
+
+clusWilcox.test.ranksum.dd <- function(x, cluster, group,
+                                       alternative,
+                                       mu, exact, B,
+                                       DNAME, METHOD) {
+    group <- recoderFunc(group, sort(unique(group)), c(1, 0))
+     if (exact == TRUE)  {
+        stop("No exact test is available for the DD ranksum test.")
+    }
+    group.uniq <- length(unique(group))
+    if (group.uniq == 1) {
+        stop("invalid group variable, should contain 2 groups")
+    }
+
+     cgrp0 <- aggregate(group == 0, list(cluster), sum)
+     cgrp1 <- aggregate(group == 1, list(cluster), sum)
+     cid <- cgrp0[, 1]
+     cid <- cid[which(cgrp0[, 2] > 0)]  # Take out clusters with at least one member from group 0
+     cid10 <- cid[which((cgrp0[, 2] > 0) & cgrp1[, 2] == 0)] # Further take out clusters with no member from group 1
+
+     ## Take out clusters which have obs from group 1
+     data <- cbind(cluster, x, group)
+     data <- data[cluster %in% cid, ]
+     m <- length(unique(data[, 1]))
+     n.obs <- nrow(data)
+
+     rn <- function(dv) {
+         cx <- dv[1]
+         x <- dv[2]
+         ds1 <- data[data[, 3] == 0, ]
+         vs1 <- (ds1[, 2] < x) + (ds1[, 2] <= x)
+         sl1 <- aggregate(vs1, list(ds1[, 1]), mean)[, 2]
+         ds2 <- data[data[, 3] == 1, ]
+
+         if (length(cid10) > 0) {
+             ds2 <- rbind(ds2, cbind(cid10, 0, 2))
+         }
+
+         vs2 <- (ds2[, 2] < x) + (ds2[, 2] <= x)
+         sl2 <- aggregate(vs2, list(ds2[, 1]), mean)[, 2]
+
+         id <- cx %in% cid10
+         fg <- (id == FALSE) * (sl1 + sl2) / 2 + (id == TRUE) * (sl1)
+         fg[cx] <- 0
+         return(fg)
+     }
+
+      rst <- function(il) {
+        ly <- sum(mat[-which(d0[, 1] == il), -il])
+        return(ly)
+      }
+
+     rst.add <- function(il) {
+         ly <- sum(idadd[-which(d0[, 1] == il)])
+         return(ly)
+     }
+
+     d0 <- data[data[, 3] == 0, ]
+     cd0 <- (d0[, 1])
+     nv <- as.vector(table(cd0)[match(cd0, names(table(cd0)))])
+     mat <- t((apply(cbind(d0[, 1:2]), 1, rn)))/ (nv * 2)
+     idmul <- ((!(unique(cd0) %in% cid10)) + 2 * cgrp1[, 2] * (unique(cd0) %in% cid10)) / 2
+     mat <- t(t(mat) * idmul)
+     idadd <- (!(cd0 %in% cid10)) / (2 * nv) + (cd0 %in% cid10) / nv
+
+     v1 <- sum(mat) + sum(idadd)
+     vd <- apply(cbind(seq(1, m)), 1, rst) + apply(cbind(seq(1, m)), 1, rst.add)
+     S <- v1
+     ES <- 0.25 * (m + 1) * (m + length(unique(cid10)))
+     h <- 1
+     test <- (m/m^h) * v1 - ((m - 1)/(m - 1)^h) * vd
+     v.test <- var(test)
+     v_hat <- (((m^h)^2)/(m - 1)) * v.test
+     varS <- ifelse(v_hat == 0, 1e-08, v_hat)
+     Z <- (S - ES)/sqrt(varS)
+
+     pval <- switch(alternative, less = pnorm(Z),
+                   greater = pnorm(Z, lower.tail = FALSE),
+                   two.sided = 2 * min(pnorm(abs(Z)),
+                                       pnorm(abs(Z), lower.tail = FALSE)))
+    names(Z) <- "Z"
+    names(mu) <- "difference in locations"
+
+    result <- list(statistic = Z, p.value = pval, S = S,
+                   ES = ES, varS = varS,
+                   alternative = alternative, null.value = mu,
+                   data.name = DNAME, method = METHOD,
+                   nobs = n.obs, nclus = m)
+
+    class(result) <- "ctest"
+    result
 }
