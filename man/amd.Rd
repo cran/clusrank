@@ -4,7 +4,8 @@
 \name{amd}
 \alias{amd}
 \title{CARMS scores}
-\format{A data frame with 283 rows and 7 variables.
+\format{
+A data frame with 283 rows and 7 variables.
 
 \itemize{
   \item  ID patient identifier
@@ -19,7 +20,8 @@
 \item AgeSex 1: agegroup = 1, sex = 1;  2: agegroup = 2, sex = 1;
     3: agegroup = 3, sex = 1; 4: agegroup = 1, sex = 2; 5: agegroup
     = 2, sex = 2; 6: agegroup = 3, sex = 2;
-}}
+}
+}
 \source{
 The data came from Seddon's lab.
 }
@@ -58,6 +60,6 @@ Ferrara D, Seddon JM (2015)
 factor H R1210C rare genetic variant in
 age-related macular degeneration}
 JAMA Ophthalmol, 2015 Apr 16.
-\url{http://archopht.jamanetwork.com/article.aspx?articleid=2213742}.
+doi:10.1001/jamaophthalmol.2015.0814.
 }
 \keyword{datasets}

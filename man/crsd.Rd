@@ -5,12 +5,14 @@
 \alias{crsd}
 \title{Difference Between Pre and Post Treatment Scores with Clustering
  Structure: Balanced}
-\format{A data frame with 40 rows and 2 variables.
+\format{
+A data frame with 40 rows and 2 variables.
 
 
   [, 1] id cluster id
 
-  [, 2] z  score difference}
+  [, 2] z  score difference
+}
 \source{
 \url{https://sites.google.com/a/channing.
 harvard.edu/bernardrosner/channing/cluster-signed

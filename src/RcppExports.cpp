@@ -5,62 +5,6 @@
 
 using namespace Rcpp;
 
-// cumcrksum
-IntegerMatrix cumcrksum(int rks, int I, IntegerVector Score, int Csize);
-RcppExport SEXP _clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP, SEXP CsizeSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type rks(rksSEXP);
-    Rcpp::traits::input_parameter< int >::type I(ISEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
-    Rcpp::traits::input_parameter< int >::type Csize(CsizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(cumcrksum(rks, I, Score, Csize));
-    return rcpp_result_gen;
-END_RCPP
-}
-// crksum_str
-int crksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector max);
-RcppExport SEXP _clusrank_crksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP maxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type xc(xcSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type max(maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(crksum_str(k, x, xc, max));
-    return rcpp_result_gen;
-END_RCPP
-}
-// pcrksum_str
-double pcrksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector xn, IntegerVector n, IntegerVector max);
-RcppExport SEXP _clusrank_pcrksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP xnSEXP, SEXP nSEXP, SEXP maxSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type xc(xcSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type xn(xnSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type n(nSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type max(maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(pcrksum_str(k, x, xc, xn, n, max));
-    return rcpp_result_gen;
-END_RCPP
-}
-// psrkg
-double psrkg(int srk, IntegerVector Score);
-RcppExport SEXP _clusrank_psrkg(SEXP srkSEXP, SEXP ScoreSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type srk(srkSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
-    rcpp_result_gen = Rcpp::wrap(psrkg(srk, Score));
-    return rcpp_result_gen;
-END_RCPP
-}
 // Fprop
 NumericVector Fprop(NumericVector x, NumericVector clus, IntegerVector nvec, int m, int n);
 RcppExport SEXP _clusrank_Fprop(SEXP xSEXP, SEXP clusSEXP, SEXP nvecSEXP, SEXP mSEXP, SEXP nSEXP) {
@@ -169,12 +113,64 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cumcrksum
+IntegerMatrix cumcrksum(int rks, int I, IntegerVector Score, int Csize);
+RcppExport SEXP _clusrank_cumcrksum(SEXP rksSEXP, SEXP ISEXP, SEXP ScoreSEXP, SEXP CsizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type rks(rksSEXP);
+    Rcpp::traits::input_parameter< int >::type I(ISEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
+    Rcpp::traits::input_parameter< int >::type Csize(CsizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(cumcrksum(rks, I, Score, Csize));
+    return rcpp_result_gen;
+END_RCPP
+}
+// crksum_str
+int crksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector max);
+RcppExport SEXP _clusrank_crksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type xc(xcSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type max(maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(crksum_str(k, x, xc, max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pcrksum_str
+double pcrksum_str(int k, IntegerMatrix x, IntegerMatrix xc, IntegerVector xn, IntegerVector n, IntegerVector max);
+RcppExport SEXP _clusrank_pcrksum_str(SEXP kSEXP, SEXP xSEXP, SEXP xcSEXP, SEXP xnSEXP, SEXP nSEXP, SEXP maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type xc(xcSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type xn(xnSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type n(nSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type max(maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(pcrksum_str(k, x, xc, xn, n, max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// psrkg
+double psrkg(int srk, IntegerVector Score);
+RcppExport SEXP _clusrank_psrkg(SEXP srkSEXP, SEXP ScoreSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type srk(srkSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type Score(ScoreSEXP);
+    rcpp_result_gen = Rcpp::wrap(psrkg(srk, Score));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_clusrank_cumcrksum", (DL_FUNC) &_clusrank_cumcrksum, 4},
-    {"_clusrank_crksum_str", (DL_FUNC) &_clusrank_crksum_str, 4},
-    {"_clusrank_pcrksum_str", (DL_FUNC) &_clusrank_pcrksum_str, 6},
-    {"_clusrank_psrkg", (DL_FUNC) &_clusrank_psrkg, 2},
     {"_clusrank_Fprop", (DL_FUNC) &_clusrank_Fprop, 5},
     {"_clusrank_Fi", (DL_FUNC) &_clusrank_Fi, 6},
     {"_clusrank_Ftot", (DL_FUNC) &_clusrank_Ftot, 6},
@@ -182,6 +178,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_clusrank_Fi_vec", (DL_FUNC) &_clusrank_Fi_vec, 5},
     {"_clusrank_Fcom", (DL_FUNC) &_clusrank_Fcom, 6},
     {"_clusrank_Fcom_vec", (DL_FUNC) &_clusrank_Fcom_vec, 5},
+    {"_clusrank_cumcrksum", (DL_FUNC) &_clusrank_cumcrksum, 4},
+    {"_clusrank_crksum_str", (DL_FUNC) &_clusrank_crksum_str, 4},
+    {"_clusrank_pcrksum_str", (DL_FUNC) &_clusrank_pcrksum_str, 6},
+    {"_clusrank_psrkg", (DL_FUNC) &_clusrank_psrkg, 2},
     {NULL, NULL, 0}
 };
 

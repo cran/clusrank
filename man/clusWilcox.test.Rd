@@ -8,15 +8,35 @@
 \usage{
 clusWilcox.test(x, ...)
 
-\method{clusWilcox.test}{formula}(formula, data = parent.frame(),
-  subset = NULL, na.action = na.omit, alternative = c("two.sided", "less",
-  "greater"), mu = 0, paired = FALSE, exact = FALSE, B = 2000,
-  method = c("rgl", "ds", "dd"), ...)
+\method{clusWilcox.test}{formula}(
+  formula,
+  data = parent.frame(),
+  subset = NULL,
+  na.action = na.omit,
+  alternative = c("two.sided", "less", "greater"),
+  mu = 0,
+  paired = FALSE,
+  exact = FALSE,
+  B = 2000,
+  method = c("rgl", "ds", "dd"),
+  ...
+)
 
-\method{clusWilcox.test}{default}(x, y = NULL, cluster = NULL,
-  group = NULL, stratum = NULL, data = NULL,
-  alternative = c("two.sided", "less", "greater"), mu = 0, paired = FALSE,
-  exact = FALSE, B = 2000, method = c("rgl", "ds", "dd"), ...)
+\method{clusWilcox.test}{default}(
+  x,
+  y = NULL,
+  cluster = NULL,
+  group = NULL,
+  stratum = NULL,
+  data = NULL,
+  alternative = c("two.sided", "less", "greater"),
+  mu = 0,
+  paired = FALSE,
+  exact = FALSE,
+  B = 2000,
+  method = c("rgl", "ds", "dd"),
+  ...
+)
 }
 \arguments{
 \item{x}{A numeric vector of data values or a formula. Non-finite (e.g.,
