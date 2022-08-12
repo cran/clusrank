@@ -1,9 +1,9 @@
-b944ade93e5150a4bb35d739a77094f2 *DESCRIPTION
-f4797862418a221ba0a48d0c7c597f0f *NAMESPACE
+436a078a0fc9e0028287cc19bf777a1e *DESCRIPTION
+ddabeb35ac0f27a22715a011f2008db9 *NAMESPACE
 9d20d5f2d1eb2738f600bba00230eb9d *NEWS.md
 f446762be615526d71f43ba25d641b45 *R/RcppExports.R
 62cc3794606b0dd3f6adba6de923d23f *R/amd.R
-b85d95e059984e924e132b3ca53ed749 *R/clusWilcox.R
+059a34249c8efd1f040e27ba1439b421 *R/clusWilcox.R
 df6255e064e87699cc0b91ae2a11ddfb *R/clusranksum.R
 0980fd8b6722b53a508ab09dd2506e5a *R/clussignrank.R
 69fac41b13c3c98745eff180d3077518 *R/crd.R
@@ -22,7 +22,7 @@ c51088957ddaecb2e43ffc98ea19ab32 *R/print.R
 493fb782bfacc1dcb46acdeb691cbce8 *data/crsdUnb.rda
 9ae986cebf393a6a83f95a9b65ea9cc5 *inst/CITATION
 8fc66f2844a161604ca911fb1a6906be *man/amd.Rd
-79ca26bac035c04d7ae8d2f181a9c995 *man/clusWilcox.test.Rd
+df40ffa10f0dc0dea1449299b881c1f3 *man/clusWilcox.test.Rd
 a58132e5c2a31cd681392a6a298a9642 *man/cluster.Rd
 b4b2f7fda9ed8f4da261262052c02e83 *man/crd.Rd
 581dab37212c286ee9b05832cdca3898 *man/crdStr.Rd
