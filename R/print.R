@@ -1,7 +1,8 @@
-################################################################################
 ##
 ## clusrank: Wilcoxon Rank Tests for Clustered Data
-## Copyright (C) 2015-2022  Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+##
+## Copyright (C) 2015-2024 Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+## Copyright (C) 2022-2024 Wenjie Wang
 ##
 ## This file is part of the R package clusrank.
 ##
@@ -15,11 +16,10 @@
 ## but WITHOUT ANY WARRANTY without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ##
-################################################################################
 
 
-#' @keywords internal
-#' @export
+##' @keywords internal
+##' @export
 print.ctest <- function (x, digits = getOption("digits"), prefix = "\t", ...)
 {
     cat("\n")

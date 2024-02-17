@@ -1,7 +1,8 @@
-################################################################################
 ##
 ## clusrank: Wilcoxon Rank Tests for Clustered Data
-## Copyright (C) 2015-2022  Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+##
+## Copyright (C) 2015-2024 Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+## Copyright (C) 2022-2024 Wenjie Wang
 ##
 ## This file is part of the R package clusrank.
 ##
@@ -15,10 +16,11 @@
 ## but WITHOUT ANY WARRANTY without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ##
-################################################################################
-clusWilcox.test.signedrank.rgl.exact <- function(x, cluster,
-                                                alternative,
-                                                mu, B, DNAME, METHOD) {
+
+
+clusWilcox_test_signedrank_rgl_exact <- function(x, cluster,
+                                                 alternative,
+                                                 mu, B, DNAME, METHOD) {
     METHOD <- paste0(METHOD, " (random permutation)")
     x <- x - mu
     data <- data.frame(x, cluster)
@@ -37,25 +39,16 @@ clusWilcox.test.signedrank.rgl.exact <- function(x, cluster,
     signrank <- ifelse(data$x > 0, 1, -1) * data$xrank
     data <- cbind(data, signrank)
     colnames(data)[4] <- "signrank"
-
     srksum <-  stats::aggregate(signrank ~ cluster, FUN = sum)[, 2]
-
-    T <- sum(data$signrank)
-
+    T0 <- sum(data$signrank)
     ind <- replicate(B, sample(c(1, -1), m, TRUE))
-
-    T.ecdf <- ecdf(colSums(ind * srksum))
-
-    pval <- switch(alternative,
-                   less = T.ecdf(T),
-                   greater = 1 - T.ecdf(T),
-                   two.sided = 2 * min(T.ecdf(T), 1 - T.ecdf(T)))
-
-    names(T) <- "T"
+    Ts <- colSums(ind * srksum)
+    pval <- perm_pvalue(T0, Ts, alternative)
+    names(T0) <- "T"
     names(n) <- "total number of observations"
     names(m) <- "total number of clusters"
     names(mu) <- "shift in location"
-    result <- list(statistic = T,
+    result <- list(statistic = T0,
                    p.value = pval, nobs = n, nclus = m, null.value = mu,
                    alternative = alternative,
                    data.name = DNAME, method = METHOD)
@@ -67,11 +60,11 @@ clusWilcox.test.signedrank.rgl.exact <- function(x, cluster,
 
 
 
-clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
+clusWilcox_test_signedrank_rgl <- function(x, cluster, alternative,
                                            mu, exact, B, DNAME, METHOD) {
 ### Ties are dropped
     if (exact == TRUE && B >= 1)
-        return(clusWilcox.test.signedrank.rgl.exact(x, cluster, alternative,
+        return(clusWilcox_test_signedrank_rgl_exact(x, cluster, alternative,
                                                    mu, B, DNAME, METHOD))
     x <- x - mu
     data <- data.frame(x, cluster)
@@ -206,7 +199,7 @@ clusWilcox.test.signedrank.rgl <- function(x, cluster, alternative,
     }
 }
 
-clusWilcox.test.signedrank.ds.exact.1 <- function(x, cluster) {
+clusWilcox_test_signedrank_ds_exact1 <- function(x, cluster) {
     order.c <- order(cluster)
     x <- x[order.c]
     cluster <- cluster[order.c]
@@ -237,9 +230,9 @@ clusWilcox.test.signedrank.ds.exact.1 <- function(x, cluster) {
 }
 
 
-clusWilcox.test.signedrank.ds.exact <- function(x, cluster, alternative,
-                                               B,
-                                               mu, DNAME, METHOD) {
+clusWilcox_test_signedrank_ds_exact <- function(x, cluster, alternative,
+                                                B, mu, DNAME, METHOD)
+{
     METHOD <- paste0(METHOD, " (random permutation)")
     T.vec <- rep(NA, B)
     x <- x - mu
@@ -248,41 +241,34 @@ clusWilcox.test.signedrank.ds.exact <- function(x, cluster, alternative,
     for ( i in 1 : B) {
         sgn.samp <- sample(c(-1, 1), n.obs, TRUE)
         x.samp <- abs(x) * sgn.samp
-        T.vec[i] <- clusWilcox.test.signedrank.ds.exact.1(x.samp, cluster)
+        T.vec[i] <- clusWilcox_test_signedrank_ds_exact1(x.samp, cluster)
     }
-    T <- clusWilcox.test.signedrank.ds.exact.1(x, cluster)
-    t.ecdf <- ecdf(T.vec)
-
-    pval <- switch(alternative, less = t.ecdf(T),
-                   greater = 1 - t.ecdf(T),
-                   two.sided = 2 * min(t.ecdf(T), 1 - t.ecdf(T)))
-
+    T0 <- clusWilcox_test_signedrank_ds_exact1(x, cluster)
+    pval <- perm_pvalue(T0, T.vec, alternative)
     names(n.obs) <- "total number of observations"
     names(n.clus) <- "total number of clusters"
-    names(T) <- "T"
+    names(T0) <- "T"
     names(mu) <- "shift in location"
-    result <- list(statistic = T,
+    result <- list(statistic = T0,
                    p.value = pval, nobs = n.obs, nclus = n.clus,
                    alternative = alternative,
                    null.value = mu,
                    data.name = DNAME, method = METHOD)
     class(result) <- "ctest"
     return(result)
-
-
 }
 
 
-clusWilcox.test.signedrank.ds <- function(x, cluster, alternative, exact, B,
+clusWilcox_test_signedrank_ds <- function(x, cluster, alternative, exact, B,
                                           mu, DNAME, METHOD) {
 
 
-    if (exact == TRUE & B >= 1){
-        return(clusWilcox.test.signedrank.ds.exact(x, cluster, alternative,
+    if (exact == TRUE && B >= 1){
+        return(clusWilcox_test_signedrank_ds_exact(x, cluster, alternative,
                                                   B, mu, DNAME, METHOD))
     }
 
-    if (exact == TRUE & B == 0) {
+    if (exact == TRUE && B == 0) {
         warning("Exact test is not provided for DS method for signed rank test, large-sample test will be carried out")
     }
 

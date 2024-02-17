@@ -1,7 +1,8 @@
-################################################################################
 ##
 ## clusrank: Wilcoxon Rank Tests for Clustered Data
-## Copyright (C) 2015-2022  Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+##
+## Copyright (C) 2015-2024 Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+## Copyright (C) 2022-2024 Wenjie Wang
 ##
 ## This file is part of the R package clusrank.
 ##
@@ -15,24 +16,25 @@
 ## but WITHOUT ANY WARRANTY without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ##
-################################################################################
-#' Clustered Non-Stratified Data for Testing Clustered Rank Sum Test
-#'
-#' Non-stratified data including 3 variables:
-#'  id, z, group. Have some missing values.
-#'
-#' @format
-#' A data frame with 340 observations on 3 variables.
-#'
-#' [, 1] id    cluster id
-#'
-#' [, 2] z     score
-#'
-#' [, 3] group group id
-#'
-#' @name crd
-#' @docType data
-#' @source \url{https://sites.google.com/a/channing.harvard.edu/bernardrosner/channing/incorporating-cluster-effects-for-
-#' the-wilcoxon-rank-sum-test-1/cluswilcox/sample_data}
-#' @keywords datasets internal
+
+
+##' Clustered Non-Stratified Data for Testing Clustered Rank Sum Test
+##'
+##' Non-stratified data including 3 variables:
+##'  id, z, group. Have some missing values.
+##'
+##' @format
+##' A data frame with 340 observations on 3 variables.
+##'
+##' [, 1] id    cluster id
+##'
+##' [, 2] z     score
+##'
+##' [, 3] group group id
+##'
+##' @name crd
+##' @docType data
+##' @source \url{https://sites.google.com/a/channing.harvard.edu/bernardrosner/channing/incorporating-cluster-effects-for-
+##' the-wilcoxon-rank-sum-test-1/cluswilcox/sample_data}
+##' @keywords datasets internal
 NULL

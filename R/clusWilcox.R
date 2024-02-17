@@ -1,7 +1,8 @@
-################################################################################
 ##
 ## clusrank: Wilcoxon Rank Tests for Clustered Data
-## Copyright (C) 2015-2022  Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+##
+## Copyright (C) 2015-2024 Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+## Copyright (C) 2022-2024 Wenjie Wang
 ##
 ## This file is part of the R package clusrank.
 ##
@@ -15,7 +16,6 @@
 ## but WITHOUT ANY WARRANTY without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ##
-################################################################################
 
 
 ##' Wilcoxon Rank Sum and Signed Rank Test for Clustered Data
@@ -119,58 +119,45 @@
 ##' \item{df}{degrees of freedom of chi-square distribution, will be returned when there are more than 2 treatment groups and \code{ds} method is used.}
 ##' \item{nobs}{number of observations}
 ##' \item{nclus}{number of clusters}
-
-#' @section Warning:
-#' This function can use large amounts of memory and stack if 'exact =
-#'     TRUE' and one sample is large (and even crash R if the stack
-#'     limit is exceeded). Not recommended for data set
-#'     with number of clusters more than 50.
-#'
-#' @examples
-#' ## Clustered signed rank test using RGL method.
-#' data(crsd)
-#' clusWilcox.test(z, cluster = id, data = crsd, paired = TRUE, method = "rgl")
-#' ## or
-#' clusWilcox.test(z ~ cluster(id), data = crsd, paired = TRUE, method = "rgl")
-#' \dontrun{clusWilcox.test(z, cluster = id, data = crsd)
-#' ## Default is rank sum test. The group variable is required.}
-#' ## Clustered rank sum test using RGL method.
-#' data(crd)
-#' clusWilcox.test(z ~ group + cluster(id), data = crd, method = "rgl")
-#' ## or
-#' clusWilcox.test(z, cluster = id, group = group, data = crd, method = "rgl")
-#' @author Yujing Jiang
-#' @references
-#' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
-#' \emph{The Wilcoxon Signed Rank Test for Paired Comparisons of
-#'  Clustered Data}. Biometrics, \bold{62}, 185-192.
-#'
-#' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2003)
-#' \emph{Incorporation of Clustering Effects for the Wilcoxon Rank
-#' Sum Test: A Large-Sample Approach}. Biometrics, \bold{59}, 1089-1098.
-#'
-#' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
-#' \emph{Extension of the Rank Sum Test for Clustered Data:
-#' Two-Group Comparisons with Group}. Biometrics, \bold{62}, 1251-1259.
-#'
-#' Somnath Datta, Glen A. Satten (2005) \emph{Rank-Sum Tests for Clustered Data}.
-#' Journal of the American Statistical Association, \bold{100}, 908-915.
-#'
-#' Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank Test for Clustered Data}.
-#' Biometrics, \bold{64}, 501-507.
-#'
-#' Sandipan Dutta, Somnath Datta (2015) \emph{A Rank-Sum Test for Clustered
-#'     Data When the Number of Subjects in a Group within a Cluster is
-#'     Informative}.
-#' Biometrics, \bold{72}, 432-440.
-#'
-#' @importFrom stats complete.cases na.omit terms complete.cases model.extract
-#'     aggregate lm ecdf pnorm qnorm var pchisq setNames lag as.formula
-#' @importFrom MASS ginv
-#' @importFrom Rcpp evalCpp
-#' @useDynLib clusrank, .registration = TRUE
-#' @export
-
+##' @section Warning:
+##' This function can use large amounts of memory and stack if 'exact =
+##'     TRUE' and one sample is large (and even crash R if the stack
+##'     limit is exceeded). Not recommended for data set
+##'     with number of clusters more than 50.
+##'
+##' @example inst/examples/ex-clusWilcox.R
+##'
+##' @author Yujing Jiang
+##' @references
+##' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
+##' \emph{The Wilcoxon Signed Rank Test for Paired Comparisons of
+##'  Clustered Data}. Biometrics, \bold{62}, 185-192.
+##'
+##' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2003)
+##' \emph{Incorporation of Clustering Effects for the Wilcoxon Rank
+##' Sum Test: A Large-Sample Approach}. Biometrics, \bold{59}, 1089-1098.
+##'
+##' Bernard Rosner, Robert J. Glynn, Mei-Ling T. Lee (2006)
+##' \emph{Extension of the Rank Sum Test for Clustered Data:
+##' Two-Group Comparisons with Group}. Biometrics, \bold{62}, 1251-1259.
+##'
+##' Somnath Datta, Glen A. Satten (2005) \emph{Rank-Sum Tests for Clustered Data}.
+##' Journal of the American Statistical Association, \bold{100}, 908-915.
+##'
+##' Somath Datta, Glen A. Satten (2008) \emph{A Signed-Rank Test for Clustered Data}.
+##' Biometrics, \bold{64}, 501-507.
+##'
+##' Sandipan Dutta, Somnath Datta (2015) \emph{A Rank-Sum Test for Clustered
+##'     Data When the Number of Subjects in a Group within a Cluster is
+##'     Informative}.
+##' Biometrics, \bold{72}, 432-440.
+##'
+##' @importFrom stats complete.cases na.omit terms complete.cases model.extract
+##'     aggregate lm ecdf pnorm qnorm var pchisq setNames lag as.formula
+##' @importFrom MASS ginv
+##' @importFrom Rcpp evalCpp
+##' @useDynLib clusrank, .registration = TRUE
+##' @export
 clusWilcox.test <- function(x, ...) {
     pars <- as.list(match.call()[-1])
     if (!is.null(pars$data)) {
@@ -195,11 +182,9 @@ clusWilcox.test <- function(x, ...) {
 }
 
 
-#' @method clusWilcox.test formula
-#' @describeIn clusWilcox.test \code{S3} method for class 'formula'
-#' @export
-
-
+##' @method clusWilcox.test formula
+##' @describeIn clusWilcox.test \code{S3} method for class 'formula'
+##' @export
 clusWilcox.test.formula <- function(formula, data = parent.frame(), subset = NULL,
                                     na.action = na.omit,
                                     alternative = c("two.sided", "less", "greater"),
@@ -278,10 +263,9 @@ clusWilcox.test.formula <- function(formula, data = parent.frame(), subset = NUL
 }
 
 
-#' @method clusWilcox.test default
-#' @describeIn clusWilcox.test Default \code{S3} method.
-#' @export
-
+##' @method clusWilcox.test default
+##' @describeIn clusWilcox.test Default \code{S3} method.
+##' @export
 clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
                                     group = NULL, stratum = NULL, data = NULL,
                                     alternative = c("two.sided", "less", "greater"),
@@ -378,7 +362,7 @@ clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
                                 c("x", "cluster", "alternative",
                                   "mu",
                                   "METHOD", "DNAME",  "exact", "B"))
-            result <- do.call("clusWilcox.test.signedrank.rgl", c(arglist))
+            result <- do.call("clusWilcox_test_signedrank_rgl", c(arglist))
             return(result)
         }
         if (method == "ds") {
@@ -390,7 +374,7 @@ clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
                                 c("x", "cluster", "alternative",
                                   "mu", "exact", "B", "METHOD", "DNAME"))
 
-            result <-  do.call("clusWilcox.test.signedrank.ds",
+            result <-  do.call("clusWilcox_test_signedrank_ds",
                                c(arglist))
             return(result)
         }
@@ -405,7 +389,7 @@ clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
                                 c("x", "cluster", "group", "stratum",
                                   "alternative", "mu", "DNAME", "METHOD",
                                   "exact", "B"))
-            result <- do.call("clusWilcox.test.ranksum.rgl", c(arglist))
+            result <- do.call("clusWilcox_test_ranksum_rgl", c(arglist))
             return(result)
         }
         if (method == "dd") {
@@ -416,7 +400,7 @@ clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
             arglist <- setNames(list(x, cluster, group, alternative, mu, exact, B, METHOD, DNAME),
                                 c("x", "cluster", "group", "alternative",
                                   "mu", "exact", "B", "METHOD", "DNAME"))
-            result <- do.call("clusWilcox.test.ranksum.dd", c(arglist))
+            result <- do.call("clusWilcox_test_ranksum_dd", c(arglist))
             return(result)
 
         }
@@ -434,7 +418,7 @@ clusWilcox.test.default <- function(x, y = NULL, cluster = NULL,
             if (length(table(stratum)) > 1L) {
                 warning("'stratum' will be ignored for the clustered rank sum test, 'ds' method")
             }
-            result <- do.call("clusWilcox.test.ranksum.ds", c(arglist))
+            result <- do.call("clusWilcox_test_ranksum_ds", c(arglist))
             return(result)
         }
         stop("Method should be one of 'rgl', 'dd' or 'ds'.")

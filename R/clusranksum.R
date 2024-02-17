@@ -1,6 +1,8 @@
-##################################################################################
+##
 ## clusrank: Wilcoxon Rank Tests for Clustered Data
-## Copyright (C) 2015-2022  Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+##
+## Copyright (C) 2015-2024 Yujing Jiang, Mei-Ling Ting Lee, and Jun Yan
+## Copyright (C) 2022-2024 Wenjie Wang
 ##
 ## This file is part of the R package clusrank.
 ##
@@ -14,11 +16,9 @@
 ## but WITHOUT ANY WARRANTY without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ##
-################################################################################
 
 
-
-clusWilcox.test.ranksum.rgl <- function(x, cluster, group, stratum,
+clusWilcox_test_ranksum_rgl <- function(x, cluster, group, stratum,
                                         alternative, exact, B, mu,
                                         DNAME = NULL, METHOD = NULL) {
     clus.grp <- lapply(split(cluster, group), unique)
@@ -45,14 +45,14 @@ clusWilcox.test.ranksum.rgl <- function(x, cluster, group, stratum,
                           "alternative", "mu", "DNAME", "METHOD",
                           "exact", "B"))
     if (l.clus != l.clus.grp) {
-        result <- do.call("clusWilcox.test.ranksum.rgl.sub", c(arglist))
+        result <- do.call("clusWilcox_test_ranksum_rgl_sub", c(arglist))
         return(result)
     } else {
         if (exact == FALSE | (exact == TRUE & B == 0)) {
-            result <- do.call("clusWilcox.test.ranksum.rgl.clus", c(arglist))
+            result <- do.call("clusWilcox_test_ranksum_rgl_clus", c(arglist))
             return(result)
         } else {
-            result <- do.call("clusWilcox.test.ranksum.rgl.clus.exact", c(arglist))
+            result <- do.call("clusWilcox_test_ranksum_rgl_clus_exact", c(arglist))
             return(result)
         }
 
@@ -62,41 +62,42 @@ clusWilcox.test.ranksum.rgl <- function(x, cluster, group, stratum,
 
 
 
-clusWilcox.test.ranksum.rgl.clus.exact.1 <- function(x, cluster, group,
+clusWilcox_test_ranksum_rgl_clus_exact1 <- function(x, cluster, group,
                                                     stratum) {
-    n.obs <- length(x)
-    one <- rep(1, n.obs)
-    x[which(group == 1)] <- x[which(group == 1)]
+    ## n.obs <- length(x)
+    ## one <- rep(1, n.obs)
+    ## x[which(group == 1)] <- x[which(group == 1)]
     xrank <- rank(x)
     rksum <-stats::aggregate(xrank ~ cluster, FUN = sum)[, 2]
-    csize <-stats::aggregate(one ~ cluster, FUN = sum)[, 2]
+    ## csize <-stats::aggregate(one ~ cluster, FUN = sum)[, 2]
     grp <- stats::aggregate(group ~ cluster, FUN = mean)[, 2]
-    strt <- stats::aggregate(stratum ~ cluster, FUN = mean)[, 2]
-    clus <- unique(cluster)
-    n.clus <- length(clus)
-    dat <- data.frame(clus, strt, grp, csize, rksum)
-    bal <- (!(length(unique(table(cluster))) != 1L))
+    ## strt <- stats::aggregate(stratum ~ cluster, FUN = mean)[, 2]
+    ## clus <- unique(cluster)
+    ## n.clus <- length(clus)
+    ## dat <- data.frame(clus, strt, grp, csize, rksum)
+    ## bal <- (!(length(unique(table(cluster))) != 1L))
 
-    csize.uniq <- unique(csize)
-    strt.uniq <- unique(strt)
-    l.csu <- length(csize.uniq)
-    l.stu <- length(strt.uniq)
+    ## csize.uniq <- unique(csize)
+    ## strt.uniq <- unique(strt)
+    ## l.csu <- length(csize.uniq)
+    ## l.stu <- length(strt.uniq)
 
-    dat.l <- split(dat, strt) ## Split the rank data by stratum
-    csize.split <- function(dat) {
-        split(dat, dat$"csize")
-    }
-    dat.l <- lapply(dat.l, csize.split)
-    sum(dat[dat$grp == 1, "rksum"])
-
-
+    ## dat.l <- split(dat, strt) ## Split the rank data by stratum
+    ## csize.split <- function(dat) {
+    ##     split(dat, dat$"csize")
+    ## }
+    ## dat.l <- lapply(dat.l, csize.split)
+    ## sum(dat[dat$grp == 1, "rksum"])
+    sum(rksum[grp == 1])
 }
 
 
-clusWilcox.test.ranksum.rgl.clus.exact <- function(x, cluster, group,
-                                                  stratum,
-                                                  alternative, exact, B,
-                                                  mu, DNAME = NULL, METHOD = NULL) {
+clusWilcox_test_ranksum_rgl_clus_exact <- function(x, cluster, group,
+                                                   stratum, alternative,
+                                                   exact, B, mu,
+                                                   DNAME = NULL,
+                                                   METHOD = NULL)
+{
     METHOD <- paste0(METHOD, " (random permutation)")
     x <- x - mu
     n.obs <- length(x)
@@ -143,7 +144,7 @@ clusWilcox.test.ranksum.rgl.clus.exact <- function(x, cluster, group,
         x
     }
 
-    W <- clusWilcox.test.ranksum.rgl.clus.exact.1(x, cluster, group, stratum)
+    W <- clusWilcox_test_ranksum_rgl_clus_exact1(x, cluster, group, stratum)
 
     W.vec <- rep(NA, B)
     for ( i in 1 : B) {
@@ -166,22 +167,14 @@ clusWilcox.test.ranksum.rgl.clus.exact <- function(x, cluster, group,
 
 
 
-        W.vec[i] <- clusWilcox.test.ranksum.rgl.clus.exact.1(x.temp,
+        W.vec[i] <- clusWilcox_test_ranksum_rgl_clus_exact1(x.temp,
                                                             cluster.temp,
                                                             group.temp,
                                                             str.temp)
     }
-
-    w.ecdf <- ecdf(W.vec)
-
-    pval<- switch(alternative,
-                  less = w.ecdf(W),
-                  greater = 1 - w.ecdf(W),
-                  two.sided = 2 * min(w.ecdf(W), 1 - w.ecdf(W)))
+    pval <- perm_pvalue(W, W.vec, alternative)
     names(mu) <- "difference in locations"
-
     names(W) <- "W"
-
     result <- list(statistic = W, p.value = pval,
                    null.value = mu, alternative = alternative,
                    data.name = DNAME, method = METHOD,
@@ -189,16 +182,11 @@ clusWilcox.test.ranksum.rgl.clus.exact <- function(x, cluster, group,
                    nobs = n.obs)
     class(result) <- "ctest"
     return(result)
-
-
-
-
-
 }
 
 
 
-clusWilcox.test.ranksum.rgl.clus <- function(x, cluster, group,
+clusWilcox_test_ranksum_rgl_clus <- function(x, cluster, group,
                                              stratum, alternative,
                                              exact, B,
                                              mu, DNAME = NULL, METHOD = NULL) {
@@ -342,7 +330,7 @@ clusWilcox.test.ranksum.rgl.clus <- function(x, cluster, group,
 
 
 
-clusWilcox.test.ranksum.rgl.sub.exact.1 <- function(x, cluster, group,
+clusWilcox_test_ranksum_rgl_sub_exact1 <- function(x, cluster, group,
                                                  stratum) {
 
     bal <- (length(table(table(cluster))) == 1) # check balance of data.
@@ -484,9 +472,11 @@ clusWilcox.test.ranksum.rgl.sub.exact.1 <- function(x, cluster, group,
 }
 
 
-clusWilcox.test.ranksum.rgl.sub.exact <- function(x, cluster, group,
-                                                 alternative, exact, B, mu, DNAME = NULL,
-                                                 METHOD = NULL, stratum) {
+clusWilcox_test_ranksum_rgl_sub_exact <- function(x, cluster, group,
+                                                  alternative, exact, B, mu,
+                                                  DNAME = NULL,
+                                                  METHOD = NULL,
+                                                  stratum) {
     METHOD <- paste0(METHOD, " (Random Permutation)")
     bal <- (length(table(table(cluster))) == 1) # check balance of
                                         # data.
@@ -536,7 +526,7 @@ clusWilcox.test.ranksum.rgl.sub.exact <- function(x, cluster, group,
         x
     }
 
-    W <- clusWilcox.test.ranksum.rgl.sub.exact.1(x, cluster,
+    W <- clusWilcox_test_ranksum_rgl_sub_exact1(x, cluster,
                                                 group, stratum)
 
     W.vec <- rep(NA, B)
@@ -553,42 +543,32 @@ clusWilcox.test.ranksum.rgl.sub.exact <- function(x, cluster, group,
         group.temp <- temp1[, 3]
         cluster.temp <- temp1[, 1]
 
-        W.vec[i] <- clusWilcox.test.ranksum.rgl.sub.exact.1(x.temp,
+        W.vec[i] <- clusWilcox_test_ranksum_rgl_sub_exact1(x.temp,
                                                            cluster.temp,
                                                            group.temp, stratum)
     }
-
-        w.ecdf <- ecdf(W.vec)
-
-        pval<- switch(alternative,
-                      less = w.ecdf(W),
-                      greater = 1 - w.ecdf(W),
-                      two.sided = 2 * min(w.ecdf(W), 1 - w.ecdf(W)))
-        names(mu) <- "shift in location"
-        if (bal == TRUE) names(W) <- "W"
-        else names(W) = "Z"
-
-        result <- list(statistic = W, p.value = pval,
+    pval <- perm_pvalue(W, W.vec, alternative)
+    names(mu) <- "shift in location"
+    if (bal)
+        names(W) <- "W"
+    else
+        names(W) = "Z"
+    result <- list(statistic = W, p.value = pval,
                    null.value = mu, alternative = alternative,
                    data.name = DNAME, method = METHOD,
                    balance = bal, exact = exact, B = B,  nclus = n.clus,
                    nobs = n.obs)
-        class(result) <- "ctest"
-        return(result)
-
-
-
-
-
+    class(result) <- "ctest"
+    return(result)
 }
 
 
 
-clusWilcox.test.ranksum.rgl.sub <- function(x, cluster, group, alternative,
+clusWilcox_test_ranksum_rgl_sub <- function(x, cluster, group, alternative,
                                        exact, B, mu, DNAME = NULL, METHOD = NULL, stratum) {
 ### The input data should be already arranged
     if (exact == TRUE & B >= 1)
-        return(clusWilcox.test.ranksum.rgl.sub.exact(x, cluster, group,
+        return(clusWilcox_test_ranksum_rgl_sub_exact(x, cluster, group,
                                                     alternative, exact, B,
                                                     mu, DNAME, METHOD, stratum))
     if (exact == TRUE & B == 0)
@@ -782,9 +762,9 @@ clusWilcox.test.ranksum.rgl.sub <- function(x, cluster, group, alternative,
     }
 }
 
-#' @importFrom MASS ginv
+##' @importFrom MASS ginv
 
-clusWilcox.test.ranksum.ds.exact.1 <- function(x, cluster, group, mu) {
+clusWilcox_test_ranksum_ds_exact1 <- function(x, cluster, group, mu) {
     group.uniq <- length(unique(group))
     if (group.uniq == 1) {
         stop("invalid group variable, should contain at least 2 groups")
@@ -883,7 +863,7 @@ clusWilcox.test.ranksum.ds.exact.1 <- function(x, cluster, group, mu) {
     }
 }
 
-clusWilcox.test.ranksum.ds.exact <- function(x, cluster, group,
+clusWilcox_test_ranksum_ds_exact <- function(x, cluster, group,
                                             alternative,
                                             mu, exact, B,
                                             DNAME, METHOD) {
@@ -891,18 +871,13 @@ clusWilcox.test.ranksum.ds.exact <- function(x, cluster, group,
     n.obs <- length(x)
     n.clus <- length(unique(cluster))
     W.vec <- rep(NA, B)
-    W <- clusWilcox.test.ranksum.ds.exact.1(x, cluster, group, 0)
+    W <- clusWilcox_test_ranksum_ds_exact1(x, cluster, group, 0)
     for ( i in 1 : B) {
         grp.temp <- sample(group, n.obs)
-        W.vec[i] <- clusWilcox.test.ranksum.ds.exact.1(x, cluster,
+        W.vec[i] <- clusWilcox_test_ranksum_ds_exact1(x, cluster,
                                                       grp.temp, 0)
-
     }
-
-    w.ecdf <- ecdf(W.vec)
-    pval <- switch(alternative, less = w.ecdf(W),
-                   greater = 1 - w.ecdf(W),
-                   two.sided = 2 * min(w.ecdf(W), 1 - w.ecdf(W)))
+    pval <- perm_pvalue(W, W.vec, alternative)
     METHOD <- paste0(METHOD, " (Random Permutation)")
     names(mu) <- "difference in locations"
 
@@ -927,14 +902,14 @@ clusWilcox.test.ranksum.ds.exact <- function(x, cluster, group,
 }
 
 
-#' @importFrom MASS ginv
+##' @importFrom MASS ginv
 
-clusWilcox.test.ranksum.ds <- function(x, cluster, group,
+clusWilcox_test_ranksum_ds <- function(x, cluster, group,
                                        alternative,
                                        mu, exact, B,
                                        DNAME, METHOD) {
     if (exact == TRUE)  {
-        return(clusWilcox.test.ranksum.ds.exact(x, cluster, group,
+        return(clusWilcox_test_ranksum_ds_exact(x, cluster, group,
                                                alternative,
                                                mu, exact, B, DNAME, METHOD))
     }
@@ -1081,7 +1056,7 @@ clusWilcox.test.ranksum.ds <- function(x, cluster, group,
 
 
 
-clusWilcox.test.ranksum.dd <- function(x, cluster, group,
+clusWilcox_test_ranksum_dd <- function(x, cluster, group,
                                        alternative,
                                        mu, exact, B,
                                        DNAME, METHOD) {
